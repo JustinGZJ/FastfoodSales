@@ -30,6 +30,7 @@ namespace DAQ.Service
                 port.PortName = PortName;
                 port.Open();
                 port.WriteLine("*IDN?");
+                port.ReadTimeout = 1000;
                 string v = port.ReadLine();
                 if (v.Length > 0)
                 {

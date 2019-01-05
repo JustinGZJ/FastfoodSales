@@ -10,35 +10,51 @@ using DAQ.Service;
 
 namespace DAQ
 {
-    public class SettingsViewModel:Screen
+    public class SettingsViewModel : Screen
     {
         [Inject]
-        public IEventAggregator Events{ get;set; }
+        public IEventAggregator Events { get; set; }
         [Inject]
         public PortAService PortServiceA { get; set; }
         [Inject]
-       public PortBService PortServiceB { get; set; }
+        public PortBService PortServiceB { get; set; }
 
         public string[] Ports { get { return SerialPort.GetPortNames(); } }
 
-        public string[] PortACMDs { get { return new string[] {"*IDN?","TRIG?" }; } }
+        public string[] PortACMDs { get { return new string[] { "*IDN?", "TRIG?" }; } }
         public string[] PortBCMDs { get { return new string[] { "*IDN?", "TRIG?" }; } }
 
         public SettingsViewModel()
         {
+        }
+        protected override void OnInitialActivate()
+        {
+
+            base.OnInitialActivate();
+            Task.Run(() =>
+            {
+                if (!PortServiceA.IsConnected)
+                    PortServiceA.Connect();
+                if (!PortServiceB.IsConnected)
+                    PortServiceB.Connect();
+            });
 
         }
         public string PortA
         {
             get { return Properties.Settings.Default.PORT_A; }
-            set { Properties.Settings.Default.PORT_A = value;
+            set
+            {
+                Properties.Settings.Default.PORT_A = value;
                 PortServiceA.Connect();
             }
         }
         public string PortB
         {
             get { return Properties.Settings.Default.PORT_B; }
-            set { Properties.Settings.Default.PORT_B = value;
+            set
+            {
+                Properties.Settings.Default.PORT_B = value;
                 PortServiceB.Connect();
             }
         }
@@ -60,10 +76,10 @@ namespace DAQ
         {
             Events.Publish("hello");
             PortABuffer = $"Send:\t{Cmd}{Environment.NewLine}";
-            bool r= PortServiceA.Request(Cmd, out string replay);
-            if(r)
+            bool r = PortServiceA.Request(Cmd, out string replay);
+            if (r)
             {
-                PortABuffer+= $"Recieve:\t{replay}{Environment.NewLine}";
+                PortABuffer += $"Recieve:\t{replay}{Environment.NewLine}";
             }
             else
             {
@@ -80,6 +96,7 @@ namespace DAQ
             }
             else
             {
+
                 PortBBuffer += $"error:\t{replay}{Environment.NewLine}";
             }
         }

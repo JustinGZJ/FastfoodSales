@@ -6,9 +6,16 @@ using System.Threading.Tasks;
 using HslCommunication;
 using HslCommunication.Profinet.Omron;
 using Stylet;
+using StyletIoC;
 
 namespace DAQ.Service
 {
+
+    public class EventIO
+    {
+        public int Index { get; set; }
+        public bool Value { get; set; }
+    }
     public class PlcService : PropertyChangedBase
     {
         OmronFinsNet omr;
@@ -17,6 +24,9 @@ namespace DAQ.Service
         public BindableCollection<short> Datas { get; set; } = new BindableCollection<short>(new short[100]);
         public BindableCollection<bool> Bits { get; set; } = new BindableCollection<bool>(new bool[16]);
         public BindableCollection<string> BitTags { get; set; } = new BindableCollection<string>(new string[16]);
+        [Inject]
+        public IEventAggregator Events { get; set; }
+
 
         public bool Connect()
         {
@@ -44,7 +54,17 @@ namespace DAQ.Service
                             {
                                 for (int i = 0; i < 16; i++)
                                 {
-                                    Bits[i] = (Datas[0] & (1 << i)) > 0;
+                                    bool v = (Datas[0] & (1 << i)) > 0;
+                                    if (Bits[i] != v)
+                                    {
+                                        var ei = new EventIO
+                                        {
+                                            Index = i,
+                                            Value = v
+                                        };
+                                        Bits[i] = v;
+                                        Events.Publish(ei, "BITS");
+                                    }
                                 }
                                 NotifyOfPropertyChange("Bits");
                             }
@@ -53,7 +73,7 @@ namespace DAQ.Service
                                 if (Datas[i] != rop.Content[i])
                                 {
                                     Datas[i] = rop.Content[i];
-                                }                             
+                                }
                             }
                         }
                         System.Threading.Thread.Sleep(10);
@@ -75,7 +95,7 @@ namespace DAQ.Service
             var r = int.TryParse(addr.Trim().Substring(1), result: out int v);
             if (r)
             {
-               return omr.Write($"D{v + index}", value).IsSuccess;
+                return omr.Write($"D{v + index}", value).IsSuccess;
             }
             return false;
         }
@@ -89,10 +109,10 @@ namespace DAQ.Service
             return false;
         }
 
-        public bool WriteGroupValue(int group,int subidx,float value)
+        public bool WriteGroupValue(int group, int subidx, float value)
         {
             return WriteValue(group * 4 * 2 + subidx + 1, value);
         }
-       
+
     }
 }
