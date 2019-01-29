@@ -17,10 +17,9 @@ namespace DAQ
         public PortAService PortAService{get;set;}
         [Inject]
         public PortBService PortBService { get; set; }
+        //[Inject]
+        //public CameraService CameraService { get; set; }
 
-        public void Send()
-        {
-            EventAggregator.Publish("hello");
-        }
+      
     }
 }

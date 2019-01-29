@@ -5,6 +5,7 @@ using System.Text;
 using System.Threading.Tasks;
 using Stylet;
 using StyletIoC;
+using DAQ.Pages;
 namespace DAQ
 {
     public class MainWindowViewModel : Conductor<object>
@@ -14,6 +15,12 @@ namespace DAQ
         public HomeViewModel Home { get; set; }
         [Inject]
         public SettingsViewModel Setting { get; set; }
+        [Inject]
+        public MsgViewModel Msg { get; set; }
+        [Inject]
+        public PLCViewModel PLC { get; set; }
+
+        public object CurrentPage { get; set; }
         public int Index
         {
             get { return index; }
@@ -27,16 +34,37 @@ namespace DAQ
                         ActivateItem(Home);
                         break;
                     case 1:
-                        ActivateItem(new UserControl1ViewModel());
+                        ActivateItem(PLC);
+                        break;
+                    case 2:
+                        ActivateItem(Msg);
+                        break;
+                    case 3:
+                        ActivateItem(new AboutViewModel());
                         break;
                 }
 
             }
         }
+        protected override void OnInitialActivate()
+        {
+            ActivateItem(Home);
+            ActiveMessages();
+            base.OnInitialActivate();
+        }
 
         public void ShowSetting()
         {
            ActivateItem(Setting);        
+        }
+
+        public void ActiveValues()
+        {
+            CurrentPage = PLC;
+        }
+        public void ActiveMessages()
+        {
+            CurrentPage = Msg;
         }
     }
 }

@@ -8,350 +8,98 @@
              xmlns:lvc="clr-namespace:LiveCharts.Wpf;assembly=LiveCharts.Wpf"
              mc:Ignorable="d" 
              xmlns:s="https://github.com/canton7/Stylet"
-             d:DesignHeight="600" d:DesignWidth="1000">
-    <md:TransitioningContent OpeningEffect="{md:TransitionEffect Kind=SlideInFromRight, Duration=00:00:0.8}">
-    <Grid>
-        <Grid.RowDefinitions>
-            <RowDefinition Height="*"/>
-            <RowDefinition Height="*"/>
-        </Grid.RowDefinitions>
-        <Grid.ColumnDefinitions>
-            <ColumnDefinition Width="*"/>
-            <ColumnDefinition Width="*"/>
-            <ColumnDefinition Width="*"/>
-            <ColumnDefinition Width="*"/>
-        </Grid.ColumnDefinitions>
- 
-            <Grid Grid.Row="0" Grid.Column="0">
-            <md:Card Background="White" HorizontalAlignment="Stretch" VerticalAlignment="Stretch" Margin="20" Grid.RowSpan="2" Grid.ColumnSpan="2">
-                <Grid>
-                    <Grid.ColumnDefinitions>
-                        <ColumnDefinition Width="78*"/>
-                        <ColumnDefinition Width="47*"/>
-                    </Grid.ColumnDefinitions>
-                    <Grid.RowDefinitions>
-                        <RowDefinition Height="*"/>
-                        <RowDefinition Height="*"/>
-                    </Grid.RowDefinitions>
-                    <Grid Background="DarkGray">
-                    <lvc:AngularGauge Value="{Binding Value}" FromValue="50" ToValue="250" 
-                          LabelsStep="50" TicksStep="25" Wedge="200" 
-                          TicksForeground="White" Foreground="White" 
-                          FontWeight="Bold" FontSize="16"
-                          SectionsInnerRadius=".5"  >
-                        <lvc:AngularGauge.Sections>
-                            <lvc:AngularSection FromValue="50" ToValue="200" Fill="#F8A725"/>
-                            <lvc:AngularSection FromValue="200" ToValue="250" Fill="#FF3939"/>
-                        </lvc:AngularGauge.Sections>
-                    </lvc:AngularGauge>
-                    </Grid>
-                    <Grid Grid.Row="1" Background="DarkGray">
-                        <lvc:AngularGauge Grid.Row="1"  Value="{Binding Value}" FromValue="50" ToValue="250" 
-                          LabelsStep="50" TicksStep="25" Wedge="200"
-                          TicksForeground="White" Foreground="White" 
-                          FontWeight="Bold" FontSize="16"
-                          SectionsInnerRadius=".5">
-                            <lvc:AngularGauge.Sections>
-                                <lvc:AngularSection FromValue="50" ToValue="200" Fill="#F8A725"/>
-                                <lvc:AngularSection FromValue="200" ToValue="250" Fill="#FF3939"/>
-                            </lvc:AngularGauge.Sections>
-                        </lvc:AngularGauge>
-                    </Grid>
-                    <Grid Grid.Column="1" Grid.Row="0">
-                        <DockPanel VerticalAlignment="Stretch">
-                            <TextBlock Background="DarkGray" Foreground="White"  HorizontalAlignment="Stretch" DockPanel.Dock="Top" FontWeight="Bold" FontSize="14">Resistance</TextBlock>
-                            <Line StrokeThickness="1" Fill="DarkGray" DockPanel.Dock="Top" HorizontalAlignment="Stretch" Stroke="Gray"></Line>
-                            <StackPanel Margin="5">
-                                <DockPanel>
-                                    <TextBlock DockPanel.Dock="Left">Top </TextBlock>
-                                    <TextBlock HorizontalAlignment="Center">0</TextBlock>
-                                </DockPanel>
-                                <DockPanel>
-                                    <TextBlock DockPanel.Dock="Left">Bot.</TextBlock>
-                                    <TextBlock HorizontalAlignment="Center">0</TextBlock>
-                                </DockPanel>
-                                <DockPanel>
-                                    <TextBlock DockPanel.Dock="Left">Val. </TextBlock>
-                                    <TextBlock HorizontalAlignment="Center">0</TextBlock>
-                                </DockPanel>
-                                <md:PackIcon Height="50" Width="50" HorizontalAlignment="Center" Foreground="Green" Kind="Smiley"/>
-                            </StackPanel>
-                            
+             d:DesignHeight="600" d:DesignWidth="1000"
+              d:DataContext="{d:DesignInstance  local:HomeViewModel}"
+             >
+    <UserControl.Resources>
+        <DataTemplate x:Key="SPEC">
+            <md:Card UniformCornerRadius="0.2" Margin="5">
+                <DockPanel Width="100">
+                    <TextBlock Background="DarkGray" Foreground="White"  HorizontalAlignment="Stretch" DockPanel.Dock="Top" FontWeight="Bold" FontSize="14" Text="{Binding Name}"></TextBlock>
+                    <StackPanel Margin="5">
+                        <DockPanel Visibility="Collapsed">
+                            <TextBlock DockPanel.Dock="Left" Width="40" Foreground="Gray">Upper</TextBlock>
+                            <TextBlock HorizontalAlignment="Center" Text="{Binding Upper}"></TextBlock>
                         </DockPanel>
-                    </Grid>
-                    <Grid Grid.Column="1" Grid.Row="1">
-                        <DockPanel VerticalAlignment="Stretch">
-                            <TextBlock Background="DarkGray" Foreground="White"  HorizontalAlignment="Stretch" DockPanel.Dock="Top" FontWeight="Bold" FontSize="14">Hi-pot</TextBlock>
-                            <Line StrokeThickness="1" Fill="DarkGray" DockPanel.Dock="Top" HorizontalAlignment="Stretch" Stroke="Gray"></Line>
-                            <StackPanel Margin="5">
-                                <DockPanel>
-                                    <TextBlock DockPanel.Dock="Left">Top</TextBlock>
-                                    <TextBlock HorizontalAlignment="Center">0</TextBlock>
-                                </DockPanel>
-                                <DockPanel>
-                                    <TextBlock DockPanel.Dock="Left">Bot.</TextBlock>
-                                    <TextBlock HorizontalAlignment="Center">0</TextBlock>
-                                </DockPanel>
-                                <DockPanel>
-                                    <TextBlock DockPanel.Dock="Left">Val.</TextBlock>
-                                    <TextBlock HorizontalAlignment="Center">0</TextBlock>
-                                </DockPanel>
-                                <md:PackIcon Height="50" Width="50" HorizontalAlignment="Center" Foreground="Green" Kind="Smiley"/>
-                            </StackPanel>
-
+                        <DockPanel Visibility="Collapsed">
+                            <TextBlock DockPanel.Dock="Left" Width="40" Foreground="Gray">Lower</TextBlock>
+                            <TextBlock HorizontalAlignment="Center">0</TextBlock>
                         </DockPanel>
-                    </Grid>
-                </Grid>
+                        <DockPanel>
+                            <TextBlock DockPanel.Dock="Left" Width="40" Foreground="Gray">Value</TextBlock>
+                            <TextBlock HorizontalAlignment="Center" Text="{Binding Value}"></TextBlock>
+                        </DockPanel>
+                        <md:PackIcon 
+                                        Height="50" 
+                                        Width="50"
+                                       
+                                        HorizontalAlignment="Center"
+                                        Foreground="Yellow"
+                                        Kind="SmileyNeutral">
+                            <md:PackIcon.Style>
+                                <Style TargetType="md:PackIcon">
+                                    <Style.Triggers>
+                                        <DataTrigger Binding="{Binding Result}" Value="-1">
+                                            <Setter Property="Kind" Value="SmileySad"/>
+                                            <Setter Property="Foreground" Value="Red"/>
+                                        </DataTrigger>
+                                        <DataTrigger Binding="{Binding Result}" Value="0">
+                                            <Setter Property="Kind" Value="SmileyNeutral"/>
+                                            <Setter Property="Foreground" Value="Yellow"/>
+                                        </DataTrigger>
+                                        <DataTrigger Binding="{Binding Result}" Value="1">
+                                            <Setter Property="Kind" Value="SmileyHappy"/>
+                                            <Setter Property="Foreground" Value="Green"/>
+                                        </DataTrigger>
+                                    </Style.Triggers>
+                                </Style>
+                            </md:PackIcon.Style>
+                        </md:PackIcon>
+                    </StackPanel>
+                </DockPanel>
             </md:Card>
-            </Grid>
-            <Grid Grid.Row="0" Grid.Column="1">
-                <md:Card Background="White" HorizontalAlignment="Stretch" VerticalAlignment="Stretch" Margin="20" Grid.RowSpan="2" Grid.ColumnSpan="2">
-                    <Grid>
-                        <Grid.ColumnDefinitions>
-                            <ColumnDefinition Width="78*"/>
-                            <ColumnDefinition Width="47*"/>
-                        </Grid.ColumnDefinitions>
-                        <Grid.RowDefinitions>
-                            <RowDefinition Height="*"/>
-                            <RowDefinition Height="*"/>
-                        </Grid.RowDefinitions>
-                        <Grid Background="DarkGray">
-                            <lvc:AngularGauge Value="{Binding Value}" FromValue="50" ToValue="250" 
-                          LabelsStep="50" TicksStep="25" Wedge="200" 
-                          TicksForeground="White" Foreground="White" 
-                          FontWeight="Bold" FontSize="16"
-                          SectionsInnerRadius=".5"  >
-                                <lvc:AngularGauge.Sections>
-                                    <lvc:AngularSection FromValue="50" ToValue="200" Fill="#F8A725"/>
-                                    <lvc:AngularSection FromValue="200" ToValue="250" Fill="#FF3939"/>
-                                </lvc:AngularGauge.Sections>
-                            </lvc:AngularGauge>
-                        </Grid>
-                        <Grid Grid.Row="1" Background="DarkGray">
-                            <lvc:AngularGauge Grid.Row="1"  Value="{Binding Value}" FromValue="50" ToValue="250" 
-                          LabelsStep="50" TicksStep="25" Wedge="200"
-                          TicksForeground="White" Foreground="White" 
-                          FontWeight="Bold" FontSize="16"
-                          SectionsInnerRadius=".5">
-                                <lvc:AngularGauge.Sections>
-                                    <lvc:AngularSection FromValue="50" ToValue="200" Fill="#F8A725"/>
-                                    <lvc:AngularSection FromValue="200" ToValue="250" Fill="#FF3939"/>
-                                </lvc:AngularGauge.Sections>
-                            </lvc:AngularGauge>
-                        </Grid>
-                        <Grid Grid.Column="1" Grid.Row="0">
-                            <DockPanel VerticalAlignment="Stretch">
-                                <TextBlock Background="DarkGray" Foreground="White"  HorizontalAlignment="Stretch" DockPanel.Dock="Top" FontWeight="Bold" FontSize="14">Resistance</TextBlock>
-                                <Line StrokeThickness="1" Fill="DarkGray" DockPanel.Dock="Top" HorizontalAlignment="Stretch" Stroke="Gray"></Line>
-                                <StackPanel Margin="5">
-                                    <DockPanel>
-                                        <TextBlock DockPanel.Dock="Left">Top</TextBlock>
-                                        <TextBlock HorizontalAlignment="Center">0</TextBlock>
-                                    </DockPanel>
-                                    <DockPanel>
-                                        <TextBlock DockPanel.Dock="Left">Bot.</TextBlock>
-                                        <TextBlock HorizontalAlignment="Center">0</TextBlock>
-                                    </DockPanel>
-                                    <DockPanel>
-                                        <TextBlock DockPanel.Dock="Left">Val.</TextBlock>
-                                        <TextBlock HorizontalAlignment="Center">0</TextBlock>
-                                    </DockPanel>
-                                    <md:PackIcon Height="50" Width="50" HorizontalAlignment="Center" Foreground="Green" Kind="Smiley"/>
-                                </StackPanel>
 
-                            </DockPanel>
-                        </Grid>
-                        <Grid Grid.Column="1" Grid.Row="1">
-                            <DockPanel VerticalAlignment="Stretch">
-                                <TextBlock Background="DarkGray" Foreground="White"  HorizontalAlignment="Stretch" DockPanel.Dock="Top" FontWeight="Bold" FontSize="14">Hi-pot</TextBlock>
-                                <Line StrokeThickness="1" Fill="DarkGray" DockPanel.Dock="Top" HorizontalAlignment="Stretch" Stroke="Gray"></Line>
-                                <StackPanel Margin="5">
-                                    <DockPanel>
-                                        <TextBlock DockPanel.Dock="Left">Top</TextBlock>
-                                        <TextBlock HorizontalAlignment="Center">0</TextBlock>
-                                    </DockPanel>
-                                    <DockPanel>
-                                        <TextBlock DockPanel.Dock="Left">Bot.</TextBlock>
-                                        <TextBlock HorizontalAlignment="Center">0</TextBlock>
-                                    </DockPanel>
-                                    <DockPanel>
-                                        <TextBlock DockPanel.Dock="Left">Val.</TextBlock>
-                                        <TextBlock HorizontalAlignment="Center">0</TextBlock>
-                                    </DockPanel>
-                                    <md:PackIcon Height="50" Width="50" HorizontalAlignment="Center" Foreground="Green" Kind="Smiley"/>
-                                </StackPanel>
-
-                            </DockPanel>
-                        </Grid>
-                    </Grid>
-                </md:Card>
-            </Grid>
-            <Grid Grid.Row="0" Grid.Column="2">
-                <md:Card Background="White" HorizontalAlignment="Stretch" VerticalAlignment="Stretch" Margin="20" Grid.RowSpan="2" Grid.ColumnSpan="2">
-                    <Grid>
-                        <Grid.ColumnDefinitions>
-                            <ColumnDefinition Width="78*"/>
-                            <ColumnDefinition Width="47*"/>
-                        </Grid.ColumnDefinitions>
-                        <Grid.RowDefinitions>
-                            <RowDefinition Height="*"/>
-                            <RowDefinition Height="*"/>
-                        </Grid.RowDefinitions>
-                        <Grid Background="DarkGray">
-                            <lvc:AngularGauge Value="{Binding Value}" FromValue="50" ToValue="250" 
-                          LabelsStep="50" TicksStep="25" Wedge="200" 
-                          TicksForeground="White" Foreground="White" 
-                          FontWeight="Bold" FontSize="16"
-                          SectionsInnerRadius=".5"  >
-                                <lvc:AngularGauge.Sections>
-                                    <lvc:AngularSection FromValue="50" ToValue="200" Fill="#F8A725"/>
-                                    <lvc:AngularSection FromValue="200" ToValue="250" Fill="#FF3939"/>
-                                </lvc:AngularGauge.Sections>
-                            </lvc:AngularGauge>
-                        </Grid>
-                        <Grid Grid.Row="1" Background="DarkGray">
-                            <lvc:AngularGauge Grid.Row="1"  Value="{Binding Value}" FromValue="50" ToValue="250" 
-                          LabelsStep="50" TicksStep="25" Wedge="200"
-                          TicksForeground="White" Foreground="White" 
-                          FontWeight="Bold" FontSize="16"
-                          SectionsInnerRadius=".5">
-                                <lvc:AngularGauge.Sections>
-                                    <lvc:AngularSection FromValue="50" ToValue="200" Fill="#F8A725"/>
-                                    <lvc:AngularSection FromValue="200" ToValue="250" Fill="#FF3939"/>
-                                </lvc:AngularGauge.Sections>
-                            </lvc:AngularGauge>
-                        </Grid>
-                        <Grid Grid.Column="1" Grid.Row="0">
-                            <DockPanel VerticalAlignment="Stretch">
-                                <TextBlock Background="DarkGray" Foreground="White"  HorizontalAlignment="Stretch" DockPanel.Dock="Top" FontWeight="Bold" FontSize="14">Resistance</TextBlock>
-                                <Line StrokeThickness="1" Fill="DarkGray" DockPanel.Dock="Top" HorizontalAlignment="Stretch" Stroke="Gray"></Line>
-                                <StackPanel Margin="5">
-                                    <DockPanel>
-                                        <TextBlock DockPanel.Dock="Left">Top</TextBlock>
-                                        <TextBlock HorizontalAlignment="Center">0</TextBlock>
-                                    </DockPanel>
-                                    <DockPanel>
-                                        <TextBlock DockPanel.Dock="Left">Bot.</TextBlock>
-                                        <TextBlock HorizontalAlignment="Center">0</TextBlock>
-                                    </DockPanel>
-                                    <DockPanel>
-                                        <TextBlock DockPanel.Dock="Left">Val.</TextBlock>
-                                        <TextBlock HorizontalAlignment="Center">0</TextBlock>
-                                    </DockPanel>
-                                    <md:PackIcon Height="50" Width="50" HorizontalAlignment="Center" Foreground="Green" Kind="Smiley"/>
-                                </StackPanel>
-
-                            </DockPanel>
-                        </Grid>
-                        <Grid Grid.Column="1" Grid.Row="1">
-                            <DockPanel VerticalAlignment="Stretch">
-                                <TextBlock Background="DarkGray" Foreground="White"  HorizontalAlignment="Stretch" DockPanel.Dock="Top" FontWeight="Bold" FontSize="14">Hi-pot</TextBlock>
-                                <Line StrokeThickness="1" Fill="DarkGray" DockPanel.Dock="Top" HorizontalAlignment="Stretch" Stroke="Gray"></Line>
-                                <StackPanel Margin="5">
-                                    <DockPanel>
-                                        <TextBlock DockPanel.Dock="Left">Top</TextBlock>
-                                        <TextBlock HorizontalAlignment="Center">0</TextBlock>
-                                    </DockPanel>
-                                    <DockPanel>
-                                        <TextBlock DockPanel.Dock="Left">Bot.</TextBlock>
-                                        <TextBlock HorizontalAlignment="Center">0</TextBlock>
-                                    </DockPanel>
-                                    <DockPanel>
-                                        <TextBlock DockPanel.Dock="Left">Val.</TextBlock>
-                                        <TextBlock HorizontalAlignment="Center">0</TextBlock>
-                                    </DockPanel>
-                                    <md:PackIcon Height="50" Width="50" HorizontalAlignment="Center" Foreground="Green" Kind="Smiley"/>
-                                </StackPanel>
-
-                            </DockPanel>
-                        </Grid>
-                    </Grid>
-                </md:Card>
-            </Grid>
-            <Grid Grid.Row="0" Grid.Column="3">
-                <md:Card Background="White" HorizontalAlignment="Stretch" VerticalAlignment="Stretch" Margin="20" Grid.RowSpan="2" Grid.ColumnSpan="2">
-                    <Grid>
-                        <Grid.ColumnDefinitions>
-                            <ColumnDefinition Width="78*"/>
-                            <ColumnDefinition Width="47*"/>
-                        </Grid.ColumnDefinitions>
-                        <Grid.RowDefinitions>
-                            <RowDefinition Height="*"/>
-                            <RowDefinition Height="*"/>
-                        </Grid.RowDefinitions>
-                        <Grid Background="DarkGray">
-                            <lvc:AngularGauge Value="{Binding Value}" FromValue="50" ToValue="250" 
-                          LabelsStep="50" TicksStep="25" Wedge="200" 
-                          TicksForeground="White" Foreground="White" 
-                          FontWeight="Bold" FontSize="16"
-                          SectionsInnerRadius=".5"  >
-                                <lvc:AngularGauge.Sections>
-                                    <lvc:AngularSection FromValue="50" ToValue="200" Fill="#F8A725"/>
-                                    <lvc:AngularSection FromValue="200" ToValue="250" Fill="#FF3939"/>
-                                </lvc:AngularGauge.Sections>
-                            </lvc:AngularGauge>
-                        </Grid>
-                        <Grid Grid.Row="1" Background="DarkGray">
-                            <lvc:AngularGauge Grid.Row="1"  Value="{Binding Value}" FromValue="50" ToValue="250" 
-                          LabelsStep="50" TicksStep="25" Wedge="200"
-                          TicksForeground="White" Foreground="White" 
-                          FontWeight="Bold" FontSize="16"
-                          SectionsInnerRadius=".5">
-                                <lvc:AngularGauge.Sections>
-                                    <lvc:AngularSection FromValue="50" ToValue="200" Fill="#F8A725"/>
-                                    <lvc:AngularSection FromValue="200" ToValue="250" Fill="#FF3939"/>
-                                </lvc:AngularGauge.Sections>
-                            </lvc:AngularGauge>
-                        </Grid>
-                        <Grid Grid.Column="1" Grid.Row="0">
-                            <DockPanel VerticalAlignment="Stretch">
-                                <TextBlock Background="DarkGray" Foreground="White"  HorizontalAlignment="Stretch" DockPanel.Dock="Top" FontWeight="Bold" FontSize="14">Resistance</TextBlock>
-                                <Line StrokeThickness="1" Fill="DarkGray" DockPanel.Dock="Top" HorizontalAlignment="Stretch" Stroke="Gray"></Line>
-                                <StackPanel Margin="5">
-                                    <DockPanel>
-                                        <TextBlock DockPanel.Dock="Left">Top</TextBlock>
-                                        <TextBlock HorizontalAlignment="Center">0</TextBlock>
-                                    </DockPanel>
-                                    <DockPanel>
-                                        <TextBlock DockPanel.Dock="Left">Bot.</TextBlock>
-                                        <TextBlock HorizontalAlignment="Center">0</TextBlock>
-                                    </DockPanel>
-                                    <DockPanel>
-                                        <TextBlock DockPanel.Dock="Left">Val.</TextBlock>
-                                        <TextBlock HorizontalAlignment="Center">0</TextBlock>
-                                    </DockPanel>
-                                    <md:PackIcon Height="50" Width="50" HorizontalAlignment="Center" Foreground="Green" Kind="Smiley"/>
-                                </StackPanel>
-
-                            </DockPanel>
-                        </Grid>
-                        <Grid Grid.Column="1" Grid.Row="1">
-                            <DockPanel VerticalAlignment="Stretch">
-                                <TextBlock Background="DarkGray" Foreground="White"  HorizontalAlignment="Stretch" DockPanel.Dock="Top" FontWeight="Bold" FontSize="14">Hi-pot</TextBlock>
-                                <Line StrokeThickness="1" Fill="DarkGray" DockPanel.Dock="Top" HorizontalAlignment="Stretch" Stroke="Gray"></Line>
-                                <StackPanel Margin="5">
-                                    <DockPanel>
-                                        <TextBlock DockPanel.Dock="Left">Top</TextBlock>
-                                        <TextBlock HorizontalAlignment="Center">0</TextBlock>
-                                    </DockPanel>
-                                    <DockPanel>
-                                        <TextBlock DockPanel.Dock="Left">Bot.</TextBlock>
-                                        <TextBlock HorizontalAlignment="Center">0</TextBlock>
-                                    </DockPanel>
-                                    <DockPanel>
-                                        <TextBlock DockPanel.Dock="Left">Val.</TextBlock>
-                                        <TextBlock HorizontalAlignment="Center">0</TextBlock>
-                                    </DockPanel>
-                                    <md:PackIcon Height="50" Width="50" HorizontalAlignment="Center" Foreground="Green" Kind="Smiley"/>
-                                </StackPanel>
-
-                            </DockPanel>
-                        </Grid>
-                    </Grid>
-                </md:Card>
-            </Grid>
-            <Button x:Name="button" Content="Button" Command="{ s:Action Method=Send}" HorizontalAlignment="Left" Margin="98,15,0,0" Grid.Row="1" VerticalAlignment="Top" Width="75"/>
-
-        </Grid>
+        </DataTemplate>
+    </UserControl.Resources>
+    <md:TransitioningContent OpeningEffect="{md:TransitionEffect Kind=SlideInFromRight, Duration=00:00:0.5}">
+        <ScrollViewer VerticalScrollBarVisibility="Hidden">
+            <StackPanel>
+                <ItemsControl Height="auto" ItemTemplate="{StaticResource SPEC}" ItemsSource="{Binding PortAService.TestSpecs}">
+                    <ItemsControl.ItemsPanel>
+                        <ItemsPanelTemplate>
+                            <StackPanel Orientation="Horizontal"></StackPanel>
+                        </ItemsPanelTemplate>
+                    </ItemsControl.ItemsPanel>
+                </ItemsControl>
+                <ItemsControl Height="auto" ItemTemplate="{StaticResource SPEC}" ItemsSource="{Binding PortBService.TestSpecs}">
+                    <ItemsControl.ItemsPanel>
+                        <ItemsPanelTemplate>
+                            <StackPanel Orientation="Horizontal"></StackPanel>
+                        </ItemsPanelTemplate>
+                    </ItemsControl.ItemsPanel>
+                </ItemsControl>
+                <ItemsControl Height="auto" ItemTemplate="{StaticResource SPEC}" ItemsSource="{Binding CameraService.C1Values}">
+                    <ItemsControl.ItemsPanel>
+                        <ItemsPanelTemplate>
+                            <StackPanel Orientation="Horizontal"></StackPanel>
+                        </ItemsPanelTemplate>
+                    </ItemsControl.ItemsPanel>
+                </ItemsControl>
+                <ItemsControl Height="auto" ItemTemplate="{StaticResource SPEC}" ItemsSource="{Binding CameraService.C2Values}">
+                    <ItemsControl.ItemsPanel>
+                        <ItemsPanelTemplate>
+                            <StackPanel Orientation="Horizontal"></StackPanel>
+                        </ItemsPanelTemplate>
+                    </ItemsControl.ItemsPanel>
+                </ItemsControl>
+                <ItemsControl Height="auto" ItemTemplate="{StaticResource SPEC}" ItemsSource="{Binding CameraService.C3Values}">
+                    <ItemsControl.ItemsPanel>
+                        <ItemsPanelTemplate>
+                            <StackPanel Orientation="Horizontal"></StackPanel>
+                        </ItemsPanelTemplate>
+                    </ItemsControl.ItemsPanel>
+                </ItemsControl>
+            </StackPanel>
+        </ScrollViewer>
     </md:TransitioningContent>
 </UserControl>

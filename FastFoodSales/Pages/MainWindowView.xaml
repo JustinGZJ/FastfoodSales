@@ -27,7 +27,7 @@
         </Grid.RowDefinitions>
 
         <Grid Background="DeepSkyBlue" Grid.ColumnSpan="2" Grid.RowSpan="1" MouseDown="Grid_MouseDown"/>
-        <Grid x:Name="gdleft" Background="#FF363636" Grid.RowSpan="2">
+        <Grid x:Name="gdleft" Width="79" Background="#FF363636" Grid.RowSpan="2">
             <Button HorizontalAlignment="Left" Click="Button_Click" BorderBrush="{x:Null}" Background="Transparent" Height="60" Width="80" VerticalAlignment="top">
                 <materialDesign:PackIcon HorizontalAlignment="Center" VerticalAlignment="Center"  Kind="Menu" Height="44" Width="44" Foreground="Gainsboro" />
             </Button>
@@ -35,24 +35,24 @@
                 <ListViewItem  Height="60">
                     <StackPanel Margin="20,0" Orientation="Horizontal">
                         <materialDesign:PackIcon Kind="Home"  Height="30" Width="30" HorizontalAlignment="Center" VerticalAlignment="Center"/>
-                        <TextBlock HorizontalAlignment="Center" VerticalAlignment="Center" Margin="20 0">Dashboard</TextBlock>
+                        <TextBlock HorizontalAlignment="Center" VerticalAlignment="Center" Margin="20 0">Home</TextBlock>
                     </StackPanel>
                 </ListViewItem >
                 <ListViewItem  Height="60">
                     <StackPanel Margin="20,0" Orientation="Horizontal">
-                        <materialDesign:PackIcon Kind="Hamburger" Height="30" Width="30" HorizontalAlignment="Center" VerticalAlignment="Center"/>
-                        <TextBlock HorizontalAlignment="Center" VerticalAlignment="Center" Margin="20 0">Statistics</TextBlock>
+                        <materialDesign:PackIcon Kind="Monitors"  Height="30" Width="30" HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                        <TextBlock HorizontalAlignment="Center" VerticalAlignment="Center" Margin="20 0">Values</TextBlock>
                     </StackPanel>
                 </ListViewItem>
                 <ListViewItem  Height="60">
                     <StackPanel Margin="20,0" Orientation="Horizontal">
-                        <materialDesign:PackIcon Kind="LocalDrink"  Height="30" Width="30" HorizontalAlignment="Center" VerticalAlignment="Center"/>
-                        <TextBlock HorizontalAlignment="Center" VerticalAlignment="Center" Margin="20 0">History</TextBlock>
+                        <materialDesign:PackIcon Kind="Message" Height="30" Width="30" HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                        <TextBlock HorizontalAlignment="Center" VerticalAlignment="Center" Margin="20 0">Message</TextBlock>
                     </StackPanel>
                 </ListViewItem>
                 <ListViewItem  Height="60">
                     <StackPanel Margin="20,0" Orientation="Horizontal">
-                        <materialDesign:PackIcon Kind="Coffee" Height="30" Width="30" HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                        <materialDesign:PackIcon Kind="ExploreNearby" Height="30" Width="30" HorizontalAlignment="Center" VerticalAlignment="Center"/>
                         <TextBlock HorizontalAlignment="Center" VerticalAlignment="Center" Margin="20 0">About</TextBlock>
                     </StackPanel>
                 </ListViewItem>
@@ -62,8 +62,8 @@
             </materialDesign:TransitioningContent>
         </Grid>
         <StackPanel  Grid.Column="1" Margin="0,0,10,555" Grid.Row="1" Orientation="Horizontal" HorizontalAlignment="Right" VerticalAlignment="Top">
-            <Button x:Name="Bell" Foreground="DarkGray" Background="{x:Null}" BorderBrush="{x:Null}" Click="Bell_Click">
-                <materialDesign:PackIcon Kind="Bell"/>
+            <Button  x:Name="Bell" Foreground="DarkGray" Background="{x:Null}" BorderBrush="{x:Null}" Click="Bell_Click">
+                <materialDesign:PackIcon Kind="Bell" />
             </Button>
             <Button x:Name="Settings" Foreground="DarkGray" Background="{x:Null}" BorderBrush="{x:Null}" Click="{s:Action ShowSetting}">
                 <materialDesign:PackIcon Kind="Settings"/>
@@ -72,8 +72,39 @@
                 <materialDesign:PackIcon Kind="Power"/>
             </Button>
         </StackPanel>
-        <Grid Grid.Column="1"   Margin="20,35,20,20" Grid.Row="1" >
-            <ContentControl x:Name="content" s:View.Model="{Binding ActiveItem}"></ContentControl>
+        <Grid  Margin="20,35,20,20" Grid.Column="1" Grid.Row="1" >
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition/>
+                <ColumnDefinition Width="auto"/>
+            </Grid.ColumnDefinitions>
+            <Grid  x:Name="G_MSG" Width="0" MinHeight="60"  Grid.Column="1" >
+                <DockPanel LastChildFill="True">
+                    <materialDesign:ColorZone DockPanel.Dock="Top" 
+                           Background="{x:Null}">
+                        <StackPanel
+                        Orientation="Horizontal"
+                        Margin="2">
+
+                            <RadioButton
+                                  Style="{StaticResource MaterialDesignTabRadioButton}"
+                                  Margin="4"
+                                  Command="{s:Action ActiveMessages}"
+                                  IsChecked="True"
+                                  Content="Messages" />
+                            <RadioButton
+                                  Style="{StaticResource MaterialDesignTabRadioButton}"
+                                  Margin="4"
+                                  Command="{s:Action ActiveValues}"
+                                  IsChecked="False"
+                                  Content="Values" />
+                        </StackPanel>
+                    </materialDesign:ColorZone>
+                    <ContentControl x:Name="Msg" s:View.Model="{Binding CurrentPage}" MaxWidth="300"/>
+                </DockPanel>
+            </Grid>
+            <Grid>
+                <ContentControl Grid.Column="0" x:Name="content" s:View.Model="{Binding ActiveItem}" MinWidth="500"/>
+            </Grid>
         </Grid>
     </Grid>
 </Window>

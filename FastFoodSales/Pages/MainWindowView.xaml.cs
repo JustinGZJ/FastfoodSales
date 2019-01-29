@@ -27,7 +27,14 @@ namespace DAQ
 
         private void Bell_Click(object sender, RoutedEventArgs e)
         {
-
+            if (G_MSG.Width < 250)
+            {
+                G_MSG.Width = 250;
+            }
+            else
+            {
+                G_MSG.Width = 0;
+            }
         }
 
         private void Power_Click(object sender, RoutedEventArgs e)
@@ -77,5 +84,6 @@ namespace DAQ
                 gdleft.Width = 79;
             }
         }
+
     }
 }

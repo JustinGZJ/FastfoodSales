@@ -19,10 +19,13 @@ namespace DAQ
         [Inject]
         public PortBService PortServiceB { get; set; }
 
+        [Inject]
+        public PlcService plc { get; set; }
+
         public string[] Ports { get { return SerialPort.GetPortNames(); } }
 
-        public string[] PortACMDs { get { return new string[] { "*IDN?", "TRIG?" }; } }
-        public string[] PortBCMDs { get { return new string[] { "*IDN?", "TRIG?" }; } }
+        public string[] PortACMDs { get { return new string[] { "*IDN?", "TRIG?","SCAN:DATA?","READ?","FETCH?" }; } }
+        public string[] PortBCMDs { get { return new string[] { "*IDN?", "TRIG?","FETCh?"}; } }
 
         public SettingsViewModel()
         {
@@ -31,14 +34,12 @@ namespace DAQ
         {
 
             base.OnInitialActivate();
-            Task.Run(() =>
-            {
-                if (!PortServiceA.IsConnected)
-                    PortServiceA.Connect();
-                if (!PortServiceB.IsConnected)
-                    PortServiceB.Connect();
-            });
 
+        }
+        protected override void OnDeactivate()
+        {
+            base.OnDeactivate();
+            Properties.Settings.Default.Save();
         }
         public string PortA
         {
@@ -74,7 +75,6 @@ namespace DAQ
 
         public void QueryA(string Cmd)
         {
-            Events.Publish("hello");
             PortABuffer = $"Send:\t{Cmd}{Environment.NewLine}";
             bool r = PortServiceA.Request(Cmd, out string replay);
             if (r)
@@ -91,15 +91,31 @@ namespace DAQ
             PortBBuffer = $"Send:\t{Cmd}{Environment.NewLine}";
             bool r = PortServiceB.Request(Cmd, out string replay);
             if (r)
-            {
+            { 
                 PortBBuffer += $"Recieve:\t{replay}{Environment.NewLine}";
             }
             else
             {
-
                 PortBBuffer += $"error:\t{replay}{Environment.NewLine}";
             }
         }
+        bool v = false;
+        public void SetBit()
+        {
+
+                v = !v;
+                plc.WriteBool(0, v);
+                   
+        }
+
+        bool v1 = false;
+        public void SetBit1()
+        {
+
+            v1 = !v1;
+            plc.WriteBool(1, v1);
+        }
+
 
         public string CameraIP
         {
