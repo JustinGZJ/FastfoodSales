@@ -7,6 +7,7 @@ using System.IO.Ports;
 using Stylet;
 using StyletIoC;
 using DAQ.Service;
+using HslCommunication.Profinet.Omron;
 
 namespace DAQ
 {
@@ -19,13 +20,35 @@ namespace DAQ
         [Inject]
         public PortBService PortServiceB { get; set; }
 
+        [Inject] public IReadWriteFactory ReadWriteFactory { get; set; }
+
+        public int PLCValue { get; set; }
+
+        public string PLCAddress { get; set; }
+
+        public string ErrorMessage { get; set; }
+
+        public  void WriteInt()
+        {
+            var rw = ReadWriteFactory.GetReadWriteNet();
+            var result = rw.Write(PLCAddress, PLCValue);
+            if(result.IsSuccess)
+            {
+                ErrorMessage = "Success!";
+            }
+            else
+            {
+                ErrorMessage = result.Message;
+            }
+        }
+
         [Inject]
         public PlcService plc { get; set; }
 
         public string[] Ports { get { return SerialPort.GetPortNames(); } }
 
-        public string[] PortACMDs { get { return new string[] { "*IDN?", "TRIG?","SCAN:DATA?","READ?","FETCH?" }; } }
-        public string[] PortBCMDs { get { return new string[] { "*IDN?", "TRIG?","FETCh?"}; } }
+        public string[] PortACMDs { get { return new string[] { "*IDN?", "TRIG?", "SCAN:DATA?", "READ?", "FETCH?" }; } }
+        public string[] PortBCMDs { get { return new string[] { "*IDN?", "TRIG?", "FETCh?" }; } }
 
         public SettingsViewModel()
         {
@@ -91,7 +114,7 @@ namespace DAQ
             PortBBuffer = $"Send:\t{Cmd}{Environment.NewLine}";
             bool r = PortServiceB.Request(Cmd, out string replay);
             if (r)
-            { 
+            {
                 PortBBuffer += $"Recieve:\t{replay}{Environment.NewLine}";
             }
             else
@@ -103,9 +126,9 @@ namespace DAQ
         public void SetBit()
         {
 
-                v = !v;
-                plc.WriteBool(0, v);
-                   
+            v = !v;
+            plc.WriteBool(0, v);
+
         }
 
         bool v1 = false;

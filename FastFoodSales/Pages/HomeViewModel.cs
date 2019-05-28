@@ -6,6 +6,9 @@ using System.Threading.Tasks;
 using StyletIoC;
 using Stylet;
 using DAQ.Service;
+using System.Windows.Data;
+using System.Globalization;
+using DAQ.Pages;
 
 namespace DAQ
 {
@@ -17,9 +20,14 @@ namespace DAQ
         public PortAService PortAService{get;set;}
         [Inject]
         public PortBService PortBService { get; set; }
+        [Inject]
+        public MsgViewModel Msg { get; set; }
+        [Inject]
+        public OEEViewModel OEE { get; set; }
         //[Inject]
         //public CameraService CameraService { get; set; }
 
       
     }
+
 }

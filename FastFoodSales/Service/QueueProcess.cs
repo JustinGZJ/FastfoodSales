@@ -59,7 +59,7 @@ namespace DAQ.Service
             }
         }
     }
- 
+
     public class MsgDBSaver : IQueueProcesser<TestSpecViewModel>
     {
         QueueProcesser<TestSpecViewModel> processer;
@@ -84,12 +84,12 @@ namespace DAQ.Service
             });
         }
 
-        public void Process( TestSpecViewModel msg)
+        public void Process(TestSpecViewModel msg)
         {
             processer.Process(msg);
         }
     }
-    public class MsgFileSaver<T> : IQueueProcesser<T> where T:ISource
+    public class MsgFileSaver<T> : IQueueProcesser<T> where T : ISource
     {
         QueueProcesser<T> processer;
         public string FolderName { get; set; } = "../DAQData/";
@@ -103,7 +103,7 @@ namespace DAQ.Service
                   var groups = s.GroupBy(x => x.Source);
                   foreach (var group in groups)
                   {
-  
+
                       {
                           string path = Path.Combine(fullpath, DateTime.Today.ToString("yyyyMMdd"));
                           if (!Directory.Exists(path))
@@ -117,7 +117,7 @@ namespace DAQ.Service
                               stringBuilder.Append("Date Time,");
                               foreach (var p in propertyInfos)
                               {
-                                      stringBuilder.Append($"{p.Name},");
+                                  stringBuilder.Append($"{p.Name},");
                               }
                               stringBuilder.AppendLine();
                               File.AppendAllText(fileName, stringBuilder.ToString());
@@ -126,15 +126,15 @@ namespace DAQ.Service
                           StringBuilder sb = new StringBuilder();
                           foreach (var v in group)
                           {
-                              sb.Append($"{DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss")}," +        
+                              sb.Append($"{DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss")}," +
                                   $"{string.Join(",", v.GetType().GetProperties().Select(x => x.GetValue(v, null) ?? ""))}");
                               sb.AppendLine();
                           }
                           File.AppendAllText(fileName, sb.ToString());
                       }
-                    //));
+                      //));
                   }
-             //     Task.WaitAll(tasks.ToArray());
+                  //     Task.WaitAll(tasks.ToArray());
               });
         }
         public void Process(T msg)
@@ -156,5 +156,10 @@ namespace DAQ.Service
     public interface ISource
     {
         string Source { get; set; }
+    }
+    public class TLog : ISource
+    {
+        public string Source { get; set ; }
+        public string Log { get; set; }
     }
 }

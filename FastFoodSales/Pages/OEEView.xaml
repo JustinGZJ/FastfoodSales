@@ -1,0 +1,77 @@
+﻿<UserControl x:Class="DAQ.Pages.OEEView"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+             xmlns:local="clr-namespace:DAQ.Pages"
+             xmlns:md="http://materialdesigninxaml.net/winfx/xaml/themes"
+             mc:Ignorable="d" 
+             Foreground="White"
+             d:DataContext="{d:DesignInstance local:OEEViewModel}"
+     
+             >
+
+    <Grid>
+        <StackPanel Orientation="Horizontal">
+            <md:Card  Margin="0 0 20 0" x:Name="Avalibity"  Height="140" Width="120" Background="{Binding AvailibiltyBrush,Mode=OneWay}">
+                <StackPanel HorizontalAlignment="Center" VerticalAlignment="Center">
+                    <TextBlock Foreground="White" HorizontalAlignment="Center" FontSize="30" Text="{Binding Availibilty,Mode=OneWay}"></TextBlock>
+                    <TextBlock Foreground="White" HorizontalAlignment="Center">AVAILIBITY</TextBlock>
+                    <ProgressBar Width="100" Margin="10" Value="{Binding AvailibiltyValue,Mode=OneWay}" Foreground="DarkOliveGreen" Maximum="0.9" ></ProgressBar>
+                    <StackPanel Orientation="Horizontal" HorizontalAlignment="Center">
+                        <StackPanel Margin="10 0">
+                            <TextBlock TextAlignment="Center" FontSize="8">RUN</TextBlock>
+                            <TextBlock Text="{Binding Run,Mode=OneWay}" TextAlignment="Center" FontSize="8"></TextBlock>
+                        </StackPanel>
+                        <StackPanel Margin="10 0">
+                            <TextBlock  TextAlignment="Center" FontSize="8">STOP</TextBlock>
+                            <TextBlock TextAlignment="Center" Text="{Binding Stop,Mode=OneWay}" FontSize="8"></TextBlock>
+                        </StackPanel>
+                    </StackPanel>
+                </StackPanel>
+            </md:Card>
+            <md:Card x:Name="Performance"  md:ShadowAssist.ShadowDepth="Depth1" Margin="20,0" Height="140" Width="120" Background="{Binding PerformanceBrush,Mode=OneWay}">
+                <StackPanel HorizontalAlignment="Center" VerticalAlignment="Center">
+                    <TextBlock Foreground="White" HorizontalAlignment="Center" FontSize="30" Text="{Binding Performance,Mode=OneWay}"></TextBlock>
+                    <TextBlock Foreground="White" HorizontalAlignment="Center">PERFORMANCE</TextBlock>
+                    <ProgressBar Width="100" Value="{Binding PerformanceValue,Mode=OneWay}" Margin="10" Foreground="DarkOliveGreen" Maximum="1" ></ProgressBar>
+                    <StackPanel Orientation="Horizontal" HorizontalAlignment="Center">
+                        <StackPanel Margin="10 0">
+                            <TextBlock TextAlignment="Center" FontSize="8">PLAN</TextBlock>
+                            <TextBlock Text="{Binding PlanProduct,Mode=OneWay}" TextAlignment="Center" FontSize="8"></TextBlock>
+                        </StackPanel>
+                        <StackPanel Margin="10 0">
+                            <TextBlock  TextAlignment="Center" FontSize="8">REAL</TextBlock>
+                            <TextBlock Text="{Binding TotalProduct,Mode=OneWay}" TextAlignment="Center" FontSize="8"></TextBlock>
+                        </StackPanel>
+                    </StackPanel>
+                </StackPanel>
+            </md:Card>
+            <md:Card  md:ShadowAssist.ShadowDepth="Depth1" Margin="20,0" Height="140" Width="120" Background="{Binding QualityBrush,Mode=OneWay}">
+                <StackPanel HorizontalAlignment="Center" VerticalAlignment="Center">
+                    <TextBlock Text="{Binding Quality,Mode=OneWay}" Foreground="White" HorizontalAlignment="Center" FontSize="30"></TextBlock>
+                    <TextBlock Foreground="White" HorizontalAlignment="Center">QUALITY</TextBlock>
+                    <ProgressBar Width="100" Value="{Binding QualityValue,Mode=OneWay}" Margin="10" Foreground="DarkOliveGreen" Maximum="1" ></ProgressBar>
+                    <StackPanel Orientation="Horizontal" HorizontalAlignment="Center">
+                        <StackPanel Margin="10 0">
+                            <TextBlock TextAlignment="Center" FontSize="8">PASS</TextBlock>
+                            <TextBlock Text="{Binding Pass,Mode=OneWay}" TextAlignment="Center" FontSize="8"></TextBlock>
+                        </StackPanel>
+                        <StackPanel Margin="10 0">
+                            <TextBlock  TextAlignment="Center" FontSize="8">FAIL</TextBlock>
+                            <TextBlock Text="{Binding Fail,Mode=OneWay}" TextAlignment="Center" FontSize="8"></TextBlock>
+                        </StackPanel>
+                    </StackPanel>
+                </StackPanel>
+            </md:Card>
+            <md:Card  md:ShadowAssist.ShadowDepth="Depth1" x:Name="OEE" Margin="20,0" Height="140" Width="120" Background="{Binding OEEBrush}">
+                <StackPanel HorizontalAlignment="Center" VerticalAlignment="Center">
+                    <TextBlock Text="{Binding OEE,Mode=OneWay}" Foreground="White" HorizontalAlignment="Center" FontSize="30"></TextBlock>
+                    <TextBlock Foreground="White" HorizontalAlignment="Center">OEE</TextBlock>
+                    <ProgressBar Width="100" Value="{Binding OEEValue,Mode=OneWay}" Margin="10" Foreground="DarkOliveGreen"  Maximum="1"></ProgressBar>
+                    <TextBlock HorizontalAlignment="Center" TextAlignment="Center">A*P*Q</TextBlock>
+                </StackPanel>
+            </md:Card>
+        </StackPanel>
+    </Grid>
+</UserControl>

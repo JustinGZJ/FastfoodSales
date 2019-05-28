@@ -6,14 +6,17 @@ namespace DAQ.Service
 {
     public class PortBService : PortService
     {
+
         public override string PortName => Properties.Settings.Default.PORT_B;
         public PortBService(PlcService plc, IEventAggregator @event) : base(plc, @event)
         {
-            InstName = "TH";
+            InstName = "TH2883S4";
             for (int i = 0; i < 4; i++)
             {
                 TestSpecs[i].Name = "HI-POT " + i.ToString();
+              //  TestSpecs[i].Result = 1;
             }
+           
         }
 
         public override void Handle(EventIO message)
@@ -30,17 +33,17 @@ namespace DAQ.Service
         public override void Read()
         {
             base.Read();
-            if (Request("FETCh:MCRESult?", out string replay))
+            if (Request("FETCh:MCRESult?", out string reply))
             {
-                        
-                var group = replay.Split(';');
+                FileSaver.Process(new TLog() { Source = InstName, Log = reply });
+                var group = reply.Split(';');
                 if(group.Length>=4)
                 {
                     for(int i=0;i<4;i++)
                     {
                         var v = int.Parse(group[i].Split(',')[0]);
                         Plc.WriteBool(10 + i, v > 0);
-                        TestSpecs[i].Result = (v > 0)?1f:-1f;
+                        TestSpecs[i].Result = (v > 0)?1:-1;
                     }
                 }
                 else
@@ -54,19 +57,5 @@ namespace DAQ.Service
             return base.Connect();
         }
 
-
-        public override void UpdateDatas()
-        {
-            for (int i = 0; i < 4; i++)
-            {
-                if (Plc.IsConnected)
-                {
-                    TestSpecs[i].Lower = Plc.GetGroupValue(i + 4, 0);
-                    TestSpecs[i].Upper = Plc.GetGroupValue(i + 4, 1);
-                    TestSpecs[i].Value = Plc.GetGroupValue(i + 4, 2);
-                    TestSpecs[i].Result = Plc.GetGroupValue(i + 4, 3);
-                }
-            }
-        }
     }
 }

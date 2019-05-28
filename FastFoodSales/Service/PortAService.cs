@@ -13,25 +13,12 @@ namespace DAQ.Service
             for (int i = 0; i < 4; i++)
             {
                 TestSpecs[i].Name = "RESISTANCE " + i.ToString();
+                TestSpecs[i].Result = 0;
             }
             //     Events.Subscribe(this);
         }
         public override string PortName => Properties.Settings.Default.PORT_A;
 
-
-        public override void UpdateDatas()
-        {
-            for (int i = 0; i < 4; i++)
-            {
-                if (Plc.IsConnected)
-                {
-                    TestSpecs[i].Lower = Plc.GetGroupValue(i, 0);
-                    TestSpecs[i].Upper = Plc.GetGroupValue(i, 1);
-                    TestSpecs[i].Value = Plc.GetGroupValue(i, 2);
-                    TestSpecs[i].Result = Plc.GetGroupValue(i, 3);
-                }
-            }
-        }
 
         public override void Handle(EventIO message)
         {
@@ -41,7 +28,7 @@ namespace DAQ.Service
                 {
                     case (int)IO_DEF.READ_RES:
                         Plc.WriteBool((int)IO_DEF.READ_RES, false);
-                        Read();
+                        Read();                       
                         Plc.Pulse((int)IO_DEF.READ_RES + 8);
                         break;
                 }
@@ -53,6 +40,7 @@ namespace DAQ.Service
             base.Read();
             if (Request("SCAN:DATA?", out string reply))
             {
+                FileSaver.Process(new TLog() { Source = InstName, Log = reply });
                 var values = reply.Split(',');
                 if (values.Length > 1)
                 {
@@ -62,6 +50,7 @@ namespace DAQ.Service
                         if (float.TryParse(a, out float v))
                         {
                             TestSpecs[i].Value = v;
+                            TestSpecs[i].Result = Plc.Bits[2 + i] ? 1 : -1;
                         }
                         else
                         {

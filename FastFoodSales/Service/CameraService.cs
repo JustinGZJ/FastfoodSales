@@ -86,9 +86,12 @@ namespace DAQ.Service
             }
         }
 
-        public BindableCollection<TestSpecViewModel> C1Values { get; set; } = new BindableCollection<TestSpecViewModel>();
-        public BindableCollection<TestSpecViewModel> C2Values { get; set; } = new BindableCollection<TestSpecViewModel>();
-        public BindableCollection<TestSpecViewModel> C3Values { get; set; } = new BindableCollection<TestSpecViewModel>();
+        public BindableCollection<TestSpecViewModel> C1Values { get; set; } 
+                = new BindableCollection<TestSpecViewModel>();
+        public BindableCollection<TestSpecViewModel> C2Values { get; set; } 
+                = new BindableCollection<TestSpecViewModel>();
+        public BindableCollection<TestSpecViewModel> C3Values { get; set; }
+                = new BindableCollection<TestSpecViewModel>();
         public void Connect()
         {
             try
@@ -103,12 +106,19 @@ namespace DAQ.Service
                         Client.Disconnect();
                         Client.Dispose();
                     }
-                    Client = new SimpleTcpClient().Connect(Properties.Settings.Default.CAMERA_IP, Properties.Settings.Default.CAMERA_PORT);
+                    Client = new SimpleTcpClient()
+                        .Connect(Properties.Settings.Default.CAMERA_IP,
+                        Properties.Settings.Default.CAMERA_PORT);
                 }
             }
             catch (SocketException ex)
             {
-                Events.Publish(new MsgItem { Level = "E", Time = DateTime.Now, Value = ex.Message });
+                Events.Publish(new MsgItem
+                {
+                    Level = "E",
+                    Time = DateTime.Now,
+                    Value = ex.Message
+                });
             }
         }
         private void Client_DelimiterDataReceived(object sender, Message e)
@@ -116,13 +126,23 @@ namespace DAQ.Service
             try
             {
                 var str = e.MessageString;
-                Events.Publish(new MsgItem { Level = "D", Time = DateTime.Now, Value = str });
+                Events.Publish(new MsgItem
+                {
+                    Level = "D",
+                    Time = DateTime.Now,
+                    Value = str
+                });
                 e.ReplyLine("ok");
                 ParseDatas(str);
             }
             catch (Exception ex)
             {
-                Events.Publish(new MsgItem { Level = "E", Time = DateTime.Now, Value = ex.Message });
+                Events.Publish(new MsgItem
+                {
+                    Level = "E",
+                    Time = DateTime.Now,
+                    Value = ex.Message
+                });
                 //  throw;
             }
         }
@@ -138,7 +158,7 @@ namespace DAQ.Service
                     var specs = GetTestSpecs(Itesms[0], Itesms[1]);
                     C1Values.Clear();
                     C1Values.AddRange(specs);
-                    foreach(var s in specs)
+                    foreach (var s in specs)
                     {
                         FileSaver.Process(s);
                         DBSaver.Process(s);
@@ -152,7 +172,7 @@ namespace DAQ.Service
                     C2Values.AddRange(specs);
                     foreach (var s in specs)
                     {
-                  //      FileSaver.Process(s);
+                        //      FileSaver.Process(s);
                         DBSaver.Process(s);
                     }
                 }
@@ -164,14 +184,14 @@ namespace DAQ.Service
                     C3Values.AddRange(specs);
                     foreach (var s in specs)
                     {
-               //         FileSaver.Process(s);
+                        //         FileSaver.Process(s);
                         DBSaver.Process(s);
                     }
                 }
             }
         }
 
-        public List<TestSpecViewModel> GetTestSpecs(string source,string content)
+        public List<TestSpecViewModel> GetTestSpecs(string source, string content)
         {
             var specs = new List<TestSpecViewModel>();
 
@@ -197,7 +217,7 @@ namespace DAQ.Service
                                     Upper = upper,
                                     Lower = lower,
                                     Value = value,
-                                    Result = vals[4].ToUpper().Contains("PASS") ? 1F : -1F,
+                                    Result = vals[4].ToUpper().Contains("PASS") ? 1 : -1,
                                     Source = source
                                 });
 

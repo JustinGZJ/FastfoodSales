@@ -43,6 +43,9 @@
     <LangVersion>7.1</LangVersion>
     <Prefer32Bit>false</Prefer32Bit>
   </PropertyGroup>
+  <PropertyGroup>
+    <ApplicationIcon>favicon.ico</ApplicationIcon>
+  </PropertyGroup>
   <ItemGroup>
     <Reference Include="ControlzEx, Version=4.0.0.0, Culture=neutral, PublicKeyToken=69f1c32f803d307e, processorArchitecture=MSIL">
       <HintPath>..\packages\ControlzEx.4.0.0-alpha0218\lib\net45\ControlzEx.dll</HintPath>
@@ -130,6 +133,10 @@
       <DependentUpon>MsgView.xaml</DependentUpon>
     </Compile>
     <Compile Include="Pages\MsgViewModel.cs" />
+    <Compile Include="Pages\OEEView.xaml.cs">
+      <DependentUpon>OEEView.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Pages\OEEViewModel.cs" />
     <Compile Include="Pages\PLCView.xaml.cs">
       <DependentUpon>PLCView.xaml</DependentUpon>
     </Compile>
@@ -138,6 +145,7 @@
       <DependentUpon>SettingsView.xaml</DependentUpon>
     </Compile>
     <Compile Include="Pages\SettingsViewModel.cs" />
+    <Compile Include="Service\AlarmService.cs" />
     <Compile Include="Service\CameraService.cs" />
     <Compile Include="Service\DataAccess.cs" />
     <Compile Include="Service\IMsgSaver.cs" />
@@ -174,6 +182,10 @@
       <SubType>Code</SubType>
     </Compile>
     <Page Include="Pages\MsgView.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Pages\OEEView.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
@@ -237,6 +249,12 @@
     <Resource Include="Assets\home-about-2.jpg" />
     <Resource Include="Assets\home-about-3.jpg" />
     <Resource Include="Assets\home-about-4.jpg" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Logo.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="favicon.ico" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <Import Project="..\packages\Fody.3.3.4\build\Fody.targets" Condition="Exists('..\packages\Fody.3.3.4\build\Fody.targets')" />

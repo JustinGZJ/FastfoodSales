@@ -9,6 +9,6 @@ namespace DAQ.Service
         public float  Upper { get; set; }
         public float  Lower { get; set; }
         public float Value { get; set; }
-        public float Result { get; set; }
+        public int Result { get; set; }
     }
 }

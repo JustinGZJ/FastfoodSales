@@ -18,6 +18,8 @@ namespace DAQ.Service
         public bool IsConnected { get; set; }
         protected IEventAggregator Events { get; set; }
         protected PlcService Plc { get; set; }
+        [StyletIoC.Inject]
+        public MsgFileSaver<TLog> FileSaver { get; set; }
 
         protected string InstName { get; set; }
 
