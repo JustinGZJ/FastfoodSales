@@ -43,12 +43,12 @@ namespace DAQ
         }
        
         private void Grid_MouseMove(object sender, MouseEventArgs e)
-        {        
+          {        
                 Dispatcher.BeginInvoke(new Action(() =>
                 {
                     if (e.LeftButton == MouseButtonState.Pressed)
                     {
-
+                        if( e.GetPosition(this).Y<50)
                         DragMove();
                     }
                 }

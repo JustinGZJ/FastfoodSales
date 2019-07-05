@@ -1,5 +1,5 @@
 ﻿<?xml version='1.0' encoding='utf-8'?>
-<SettingsFile xmlns="http://schemas.microsoft.com/VisualStudio/2004/01/settings" CurrentProfile="(Default)" GeneratedClassNamespace="FastFoodSales.Properties" GeneratedClassName="Settings">
+<SettingsFile xmlns="http://schemas.microsoft.com/VisualStudio/2004/01/settings" CurrentProfile="(Default)" GeneratedClassNamespace="DAQ.Properties" GeneratedClassName="Settings">
   <Profiles />
   <Settings>
     <Setting Name="PORT_A" Type="System.String" Scope="User">
@@ -9,7 +9,7 @@
       <Value Profile="(Default)">COM2</Value>
     </Setting>
     <Setting Name="PLC_IP" Type="System.String" Scope="User">
-      <Value Profile="(Default)">192.168.0.10</Value>
+      <Value Profile="(Default)">192.168.0.1</Value>
     </Setting>
     <Setting Name="PLC_PORT" Type="System.Int32" Scope="User">
       <Value Profile="(Default)">9600</Value>

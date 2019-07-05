@@ -6,6 +6,7 @@ using System.Threading.Tasks;
 using HslCommunication;
 using HslCommunication.Core;
 using HslCommunication.Profinet.Omron;
+using HslCommunication.Profinet.Siemens;
 using Stylet;
 using StyletIoC;
 
@@ -131,21 +132,43 @@ namespace DAQ.Service
 
         public bool WriteBool(int index, bool value)
         {
-            var opr = _rw.ReadUInt16(addr);
-            if (opr.IsSuccess)
+            if(_rw is SiemensS7Net s7)
             {
-                ushort m;
-                if (value)
+                var opr = s7.ReadUInt16(addr);
+                if (opr.IsSuccess)
                 {
-                     m= (UInt16) (opr.Content | ((ushort)(1 << index)));
+                    ushort m;
+                    if (value)
+                    {
+                        m = (UInt16)(opr.Content | ((ushort)(1 << index)));
+                    }
+                    else
+                    {
+                        m = (UInt16)(opr.Content & (~(1 << index)));
+                    }
+                    return s7.Write(addr, m).IsSuccess;
                 }
-                else
-                {
-                    m = (UInt16)(opr.Content & (~(1 << index)));
-                }
-
-              return  _rw.Write(addr,m).IsSuccess;
             }
+            else
+            {
+                var opr = _rw.ReadUInt16(addr);
+                if (opr.IsSuccess)
+                {
+                    ushort m;
+                    if (value)
+                    {
+                        m = (UInt16)(opr.Content | ((ushort)(1 << index)));
+                    }
+                    else
+                    {
+                        m = (UInt16)(opr.Content & (~(1 << index)));
+                    }
+                    return _rw.Write(addr, m).IsSuccess;
+                }
+            }
+
+
+ 
             return false;
 
         }
