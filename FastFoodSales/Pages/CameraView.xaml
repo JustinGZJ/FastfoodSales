@@ -1,0 +1,26 @@
+﻿<UserControl
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+             xmlns:local="clr-namespace:DAQ.Pages"
+             xmlns:HalconDotNet="clr-namespace:HalconDotNet;assembly=halcondotnet" x:Class="DAQ.Pages.CameraView"
+             mc:Ignorable="d" 
+             xmlns:s="https://github.com/canton7/Stylet"
+             d:DesignHeight="450" d:DesignWidth="800">
+    <Grid>
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition/>
+            <ColumnDefinition/>
+        </Grid.ColumnDefinitions>
+        <Grid.RowDefinitions>
+            <RowDefinition />
+            <RowDefinition Height="auto"/>
+        </Grid.RowDefinitions>
+        <Button Grid.Column="0" Grid.Row="1" Grid.ColumnSpan="2" Margin="0 10"  Command="{s:Action Test}" Content="测试"/>
+
+        <HalconDotNet:HSmartWindowControlWPF Name="disp1" Grid.Column="0" Margin="5"/>
+        <HalconDotNet:HSmartWindowControlWPF Name="disp2" Grid.Column="1" Margin="5"/>
+
+    </Grid>
+</UserControl>

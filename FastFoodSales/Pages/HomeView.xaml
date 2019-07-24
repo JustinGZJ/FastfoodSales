@@ -96,7 +96,7 @@
                     <TextBlock FontSize="30">Message</TextBlock>
                 </Border>
             </StackPanel>
-            <ContentControl s:View.Model="{Binding Msg}"/>
+            <ContentControl s:View.Model="{Binding Msg}" />
         </DockPanel>
     </md:TransitioningContent>
 </UserControl>
