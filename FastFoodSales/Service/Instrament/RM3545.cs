@@ -1,23 +1,24 @@
 ﻿using System;
 using Stylet;
-
+using System.IO;
+using System.Linq;
 
 namespace DAQ.Service
 {
-    public class PortAService : PortService, IHandle<EventIO>
+
+
+    public class RM3545 : PortService, IHandle<EventIO>
     {
 
-        public PortAService(PlcService plc, IEventAggregator events) : base(plc, events)
+        public RM3545(PlcService plc, IEventAggregator events) : base(plc, events)
         {
             InstName = "RM3545";
-            for (int i = 0; i < 4; i++)
+            for (int i = 0; i < 3; i++)
             {
-                TestSpecs[i].Name = "RESISTANCE " + i.ToString();
-                TestSpecs[i].Result = 0;
+                TestSpecs.Add(new TestSpecViewModel() { Name = $"RESISTANCE {i}", Result = 0 });
             }
-            //     Events.Subscribe(this);
         }
-        public override string PortName => Properties.Settings.Default.PORT_A;
+  
 
 
         public override void Handle(EventIO message)
@@ -26,10 +27,10 @@ namespace DAQ.Service
             {
                 switch (message.Index)
                 {
-                    case (int)IO_DEF.READ_RES:
-                        Plc.WriteBool((int)IO_DEF.READ_RES, false);
-                        Read();                       
-                        Plc.Pulse((int)IO_DEF.READ_RES + 8);
+                    case (int)IO_DEF.电阻数据获取开始:
+                        Read();
+                        Plc.WriteR(TestSpecs.Select(x => x.Value).ToArray());
+                        Plc.Pulse((int)IO_DEF.电阻数据获取完成);
                         break;
                 }
             }
@@ -49,8 +50,7 @@ namespace DAQ.Service
                         var a = values[i];
                         if (float.TryParse(a, out float v))
                         {
-                            TestSpecs[i].Value = v;
-                            TestSpecs[i].Result = Plc.Bits[2 + i] ? 1 : -1;
+                            TestSpecs[i].Value = v*1000;
                         }
                         else
                         {

@@ -125,18 +125,10 @@
       <SubType>Designer</SubType>
     </ApplicationDefinition>
     <Compile Include="Bootstrapper.cs" />
-    <Compile Include="halcon\dev_update_off.cs" />
-    <Compile Include="halcon\disp_message.cs" />
-    <Compile Include="halcon\main.cs" />
-    <Compile Include="halcon\set_display_font.cs" />
     <Compile Include="Pages\AboutView.xaml.cs">
       <DependentUpon>AboutView.xaml</DependentUpon>
     </Compile>
     <Compile Include="Pages\AboutViewModel.cs" />
-    <Compile Include="Pages\CameraView.xaml.cs">
-      <DependentUpon>CameraView.xaml</DependentUpon>
-    </Compile>
-    <Compile Include="Pages\CameraViewModel.cs" />
     <Compile Include="Pages\HomeView.xaml.cs">
       <DependentUpon>HomeView.xaml</DependentUpon>
     </Compile>
@@ -163,23 +155,22 @@
     <Compile Include="Service\CameraService.cs" />
     <Compile Include="Service\DataAccess.cs" />
     <Compile Include="Service\IMsgSaver.cs" />
-    <Compile Include="Service\IPortBService.cs" />
-    <Compile Include="Service\PlcService.cs" />
-    <Compile Include="Service\PortAService.cs" />
-    <Compile Include="Service\PortBService.cs" />
-    <Compile Include="Service\PortService.cs" />
+    <Compile Include="Service\Instrament\IPortService.cs" />
+    <Compile Include="Service\Instrament\PlcService.cs" />
+    <Compile Include="Service\Instrament\TH9320.cs" />
+    <Compile Include="Service\PublishMsgEx.cs" />
+    <Compile Include="Service\Instrament\RM3545.cs" />
+    <Compile Include="Service\Instrament\TH2775B.cs" />
+    <Compile Include="Service\Instrament\TH2883S4.cs" />
+    <Compile Include="Service\Instrament\PortService.cs" />
     <Compile Include="Service\QueueProcess.cs" />
-    <Compile Include="Service\TestSpecViewModel.cs" />
+    <Compile Include="Service\Instrament\TestSpecViewModel.cs" />
     <Compile Include="Settings.cs" />
     <Compile Include="UserControl1View.xaml.cs">
       <DependentUpon>UserControl1View.xaml</DependentUpon>
     </Compile>
     <Compile Include="UserControl1ViewModel.cs" />
     <Page Include="Pages\AboutView.xaml">
-      <SubType>Designer</SubType>
-      <Generator>MSBuild:Compile</Generator>
-    </Page>
-    <Page Include="Pages\CameraView.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>

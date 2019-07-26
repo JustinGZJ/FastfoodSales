@@ -26,24 +26,24 @@ namespace DAQ.Properties {
         [global::System.Configuration.UserScopedSettingAttribute()]
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
         [global::System.Configuration.DefaultSettingValueAttribute("COM1")]
-        public string PORT_A {
+        public string PORT_RM3545 {
             get {
-                return ((string)(this["PORT_A"]));
+                return ((string)(this["PORT_RM3545"]));
             }
             set {
-                this["PORT_A"] = value;
+                this["PORT_RM3545"] = value;
             }
         }
         
         [global::System.Configuration.UserScopedSettingAttribute()]
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
         [global::System.Configuration.DefaultSettingValueAttribute("COM2")]
-        public string PORT_B {
+        public string PORT_TH2883S4 {
             get {
-                return ((string)(this["PORT_B"]));
+                return ((string)(this["PORT_TH2883S4"]));
             }
             set {
-                this["PORT_B"] = value;
+                this["PORT_TH2883S4"] = value;
             }
         }
         

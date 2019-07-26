@@ -16,9 +16,9 @@ namespace DAQ
         [Inject]
         public IEventAggregator Events { get; set; }
         [Inject]
-        public PortAService PortServiceA { get; set; }
+        public RM3545 PortServiceA { get; set; }
         [Inject]
-        public PortBService PortServiceB { get; set; }
+        public TH2882A PortServiceB { get; set; }
 
         [Inject] public IReadWriteFactory ReadWriteFactory { get; set; }
 
@@ -66,19 +66,19 @@ namespace DAQ
         }
         public string PortA
         {
-            get { return Properties.Settings.Default.PORT_A; }
+            get { return Properties.Settings.Default.PORT_RM3545; }
             set
             {
-                Properties.Settings.Default.PORT_A = value;
+                Properties.Settings.Default.PORT_RM3545 = value;
                 PortServiceA.Connect();
             }
         }
         public string PortB
         {
-            get { return Properties.Settings.Default.PORT_B; }
+            get { return Properties.Settings.Default.PORT_TH2883S4; }
             set
             {
-                Properties.Settings.Default.PORT_B = value;
+                Properties.Settings.Default.PORT_TH2883S4 = value;
                 PortServiceB.Connect();
             }
         }
@@ -138,6 +138,8 @@ namespace DAQ
             v1 = !v1;
             plc.WriteBool(1, v1);
         }
+
+  
 
 
         public string CameraIP

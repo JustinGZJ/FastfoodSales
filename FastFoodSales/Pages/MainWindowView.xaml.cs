@@ -59,7 +59,7 @@ namespace DAQ
         {      
             var index = ListMenu.SelectedIndex;     
             transrect.OnApplyTemplate();
-            rect.Margin = new Thickness(0, 100 + 60 * index, 0, 0);
+            rect.Margin = new Thickness(0, 100 + 40 * index, 0, 0);
         }
 
         private void Grid_MouseDown(object sender, MouseButtonEventArgs e)
@@ -81,7 +81,7 @@ namespace DAQ
             }
             else
             {
-                gdleft.Width = 79;
+                gdleft.Width = 50;
             }
         }
 

@@ -12,91 +12,152 @@
              d:DesignHeight="600" d:DesignWidth="1000"
               d:DataContext="{d:DesignInstance  local:HomeViewModel}"
              >
-    <UserControl.Resources>
- 
-        <DataTemplate x:Key="SPEC">
-            <md:Card UniformCornerRadius="0.2" Margin="5">
-                <DockPanel Width="100">
-                    <TextBlock Foreground="DarkGray"  HorizontalAlignment="Center" DockPanel.Dock="Top" FontWeight="Bold" FontSize="14" Text="{Binding Name}"></TextBlock>
-                    <StackPanel Margin="5">
-                        <DockPanel Visibility="Collapsed">
-                            <TextBlock DockPanel.Dock="Left" Width="40" Foreground="Gray">Upper</TextBlock>
-                            <TextBlock HorizontalAlignment="Center" Text="{Binding Upper}"></TextBlock>
-                        </DockPanel>
-                        <DockPanel Visibility="Collapsed">
-                            <TextBlock DockPanel.Dock="Left" Width="40" Foreground="Gray">Lower</TextBlock>
-                            <TextBlock HorizontalAlignment="Center">0</TextBlock>
-                        </DockPanel>
-                        <DockPanel Visibility="Collapsed">
-                            <TextBlock DockPanel.Dock="Left" Width="40" Foreground="Gray">Value</TextBlock>
-                            <TextBlock HorizontalAlignment="Center" Text="{Binding Value}"></TextBlock>
-                        </DockPanel>
-                        <md:PackIcon 
-                                        Height="50" 
-                                        Width="50"
-                                        x:Name="PI"
-                                        HorizontalAlignment="Center"
-                                   
-                                        >
-                            <md:PackIcon.Style>
-                                <Style TargetType="md:PackIcon">
-                                    <Style.Triggers>
-                                        <DataTrigger Binding="{Binding Result}" Value="-1">
-                                            <Setter Property="Kind" Value="SmileySad"  />
-                                            <Setter Property="Foreground" Value="Red"/>
-                                        </DataTrigger>
-                                        <DataTrigger Binding="{Binding Result}" Value="0">
-                                            <Setter Property="Kind" Value="SmileyNeutral" />
-                                            <Setter Property="Foreground" Value="Yellow"/>
-                                        </DataTrigger>
-                                        <DataTrigger Binding="{Binding Result}" Value="1">
-                                            <Setter Property="Kind" Value="SmileyHappy"/>
-                                            <Setter Property="Foreground" Value="Green"/>
-                                        </DataTrigger>
-                                    </Style.Triggers>
-                                </Style>
-                            </md:PackIcon.Style>
-                        </md:PackIcon>
-                    </StackPanel>
-                </DockPanel>
-            </md:Card>
 
-        </DataTemplate>
-    </UserControl.Resources>
     <md:TransitioningContent OpeningEffect="{md:TransitionEffect Kind=SlideInFromRight, Duration=00:00:0.5}">
-        <DockPanel LastChildFill="True">
-            <StackPanel DockPanel.Dock="Top">
-                <!--<Border Margin="0 10" BorderThickness="0 0 0 1" BorderBrush="DarkGray">
-                    <TextBlock FontSize="30">Overall Equipment Effectiveness</TextBlock>
-                </Border>
-          
-                    <ContentControl Margin="5 0" s:View.Model="{Binding OEE}"></ContentControl>-->
-
-                <Border Margin="0 10" BorderThickness="0 0 0 1" BorderBrush="DarkGray">
-                    <TextBlock FontSize="30">TH2883S4</TextBlock>
-                </Border>
-                <ItemsControl Height="auto" ItemTemplate="{StaticResource SPEC}" ItemsSource="{Binding PortBService.TestSpecs}">
-                    <ItemsControl.ItemsPanel>
-                        <ItemsPanelTemplate>
-                            <StackPanel Orientation="Horizontal"></StackPanel>
-                        </ItemsPanelTemplate>
-                    </ItemsControl.ItemsPanel>
-                </ItemsControl>
-                <Border Margin="0 10" BorderThickness="0 0 0 1" BorderBrush="DarkGray">
-                    <TextBlock FontSize="30">RM3545</TextBlock>
-                </Border>
-                <ItemsControl Height="auto" ItemTemplate="{StaticResource SPEC}" ItemsSource="{Binding PortAService.TestSpecs}">
-                    <ItemsControl.ItemsPanel>
-                        <ItemsPanelTemplate>
-                            <StackPanel Orientation="Horizontal"></StackPanel>
-                        </ItemsPanelTemplate>
-                    </ItemsControl.ItemsPanel>
-                </ItemsControl>
-                <Border Margin="0 10" BorderThickness="0 0 0 1" BorderBrush="DarkGray">
-                    <TextBlock FontSize="30">Message</TextBlock>
-                </Border>
+        <Grid>
+            <Grid.RowDefinitions>
+                <RowDefinition Height="auto"/>
+                <RowDefinition Height="2*"/>
+                <RowDefinition Height="*"/>
+            </Grid.RowDefinitions>
+            <StackPanel Grid.Row="0">
+                <Grid>
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition/>
+                        <ColumnDefinition/>
+                    </Grid.ColumnDefinitions>
+                    <Grid.RowDefinitions>
+                        <RowDefinition/>
+                        <RowDefinition/>
+                    </Grid.RowDefinitions>
+                    <md:Card Grid.Row="0" Grid.Column="0" Margin="20" Padding="20">
+                        <StackPanel>
+                            <Border Margin="0 10" BorderThickness="0 0 0 1" BorderBrush="DarkGray">
+                                <TextBlock FontSize="16" FontWeight="Bold">TH9320</TextBlock>
+                            </Border>
+                            <Grid Margin="20">
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="*"/>
+                                    <ColumnDefinition Width="*"/>
+                                    <ColumnDefinition Width="*"/>
+                                </Grid.ColumnDefinitions>
+                                <DockPanel LastChildFill="True">
+                                    <md:PackIcon Margin="10 0" DockPanel.Dock="Left" Kind="AlphaVBox" Foreground="#FF2381CF" HorizontalAlignment="Center" VerticalAlignment="Center" Height="40" Width="40"/>
+                                    <TextBox Text="{Binding TH9320.Mainvalue , Mode=OneWay}"  Style="{StaticResource MaterialDesignFloatingHintTextBox}" md:HintAssist.Hint="Voltage" IsReadOnly="True" Grid.ColumnSpan="2" Foreground="#FF2196F3"></TextBox>
+                                </DockPanel>
+                                <DockPanel Grid.Column="1" LastChildFill="True">
+                                    <md:PackIcon Margin="10 0" DockPanel.Dock="Left" Kind="AlphaRBox" Foreground="#FF2381CF" HorizontalAlignment="Center" VerticalAlignment="Center" Height="40" Width="40"/>
+                                    <TextBox  Text="{Binding TH9320.Subvalue, Mode=OneWay}" Style="{StaticResource MaterialDesignFloatingHintTextBox}" md:HintAssist.Hint="Resistance" IsReadOnly="True" Grid.ColumnSpan="2" Foreground="#FF2196F3"></TextBox>
+                                </DockPanel>
+                            </Grid>
+                        </StackPanel>
+                    </md:Card>
+                    <md:Card Grid.Row="0" Grid.Column="1" Margin="20" Padding="20">
+                        <StackPanel>
+                            <Border Margin="0 10" BorderThickness="0 0 0 1" BorderBrush="DarkGray">
+                                <TextBlock FontSize="16" FontWeight="Bold">RM3545</TextBlock>
+                            </Border>
+                            <Grid Margin="20">
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="*"/>
+                                    <ColumnDefinition Width="*"/>
+                                    <ColumnDefinition Width="*"/>
+                                </Grid.ColumnDefinitions>
+                                <DockPanel LastChildFill="True">
+                                    <md:PackIcon Margin="10 0" DockPanel.Dock="Left" Kind="AlphaRBox" Foreground="#FF2381CF" HorizontalAlignment="Center" VerticalAlignment="Center" Height="40" Width="40"/>
+                                    <TextBox  Text="{Binding RM3545.TestSpecs[0].Value, Mode=OneWay}" Style="{StaticResource MaterialDesignFloatingHintTextBox}" md:HintAssist.Hint="Resistance" IsReadOnly="True" Grid.ColumnSpan="2" Foreground="#FF2196F3"></TextBox>
+                                </DockPanel>
+                                <DockPanel Grid.Column="1" LastChildFill="True">
+                                    <md:PackIcon Margin="10 0" DockPanel.Dock="Left" Kind="AlphaRBox" Foreground="#FF2381CF" HorizontalAlignment="Center" VerticalAlignment="Center" Height="40" Width="40"/>
+                                    <TextBox  Text="{Binding RM3545.TestSpecs[1].Value, Mode=OneWay}" Style="{StaticResource MaterialDesignFloatingHintTextBox}" md:HintAssist.Hint="Resistance" IsReadOnly="True" Grid.ColumnSpan="2" Foreground="#FF2196F3"></TextBox>
+                                </DockPanel>
+                                <DockPanel Grid.Column="2" LastChildFill="True">
+                                    <md:PackIcon Margin="10 0" DockPanel.Dock="Left" Kind="AlphaRBox" Foreground="#FF2381CF" HorizontalAlignment="Center" VerticalAlignment="Center" Height="40" Width="40"/>
+                                    <TextBox Text="{Binding RM3545.TestSpecs[2].Value, Mode=OneWay}"  Style="{StaticResource MaterialDesignFloatingHintTextBox}" md:HintAssist.Hint="Resistance" IsReadOnly="True" Grid.ColumnSpan="2" Foreground="#FF2196F3"></TextBox>
+                                </DockPanel>
+                            </Grid>
+                        </StackPanel>
+                    </md:Card>
+                    <md:Card Grid.Row="1" Grid.Column="0" Padding="20" Margin="20">
+                        <StackPanel>
+                            <Border Margin="0 10" BorderThickness="0 0 0 1" BorderBrush="DarkGray">
+                                <TextBlock FontSize="16" FontWeight="Bold">TH2775</TextBlock>
+                            </Border>
+                            <Grid Margin="20">
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="*"/>
+                                    <ColumnDefinition Width="*"/>
+                                    <ColumnDefinition Width="*"/>
+                                </Grid.ColumnDefinitions>
+                                <DockPanel LastChildFill="True">
+                                    <md:PackIcon Margin="10 0" DockPanel.Dock="Left" Kind="AlphaLBox" Foreground="#FF2381CF" HorizontalAlignment="Center" VerticalAlignment="Center" Height="40" Width="40"/>
+                                    <TextBox Text="{Binding TH2775B.TestSpecs[0].Value, Mode=OneWay}"  Style="{StaticResource MaterialDesignFloatingHintTextBox}" md:HintAssist.Hint="Inductance" IsReadOnly="True" Grid.ColumnSpan="2" Foreground="#FF2196F3"></TextBox>
+                                </DockPanel>
+                                <DockPanel LastChildFill="True" Grid.Column="1">
+                                    <md:PackIcon Margin="10 0" DockPanel.Dock="Left" Kind="AlphaLBox" Foreground="#FF2381CF" HorizontalAlignment="Center" VerticalAlignment="Center" Height="40" Width="40"/>
+                                    <TextBox Text="{Binding TH2775B.TestSpecs[1].Value, Mode=OneWay}"  Style="{StaticResource MaterialDesignFloatingHintTextBox}" md:HintAssist.Hint="Inductance" IsReadOnly="True" Grid.ColumnSpan="2" Foreground="#FF2196F3"></TextBox>
+                                </DockPanel>
+                                <DockPanel LastChildFill="True" Grid.Column="2">
+                                    <md:PackIcon Margin="10 0" DockPanel.Dock="Left" Kind="AlphaLBox" Foreground="#FF2381CF" HorizontalAlignment="Center" VerticalAlignment="Center" Height="40" Width="40"/>
+                                    <TextBox Text="{Binding TH2775B.TestSpecs[2].Value, Mode=OneWay}"  Style="{StaticResource MaterialDesignFloatingHintTextBox}" md:HintAssist.Hint="Inductance" IsReadOnly="True" Grid.ColumnSpan="2" Foreground="#FF2196F3"></TextBox>
+                                </DockPanel>
+                            </Grid>
+                        </StackPanel>
+                    </md:Card>
+                    <md:Card Grid.Row="1" Grid.Column="1" Padding="20" Margin="20">
+                        <StackPanel>
+                            <Border Margin="0 10" BorderThickness="0 0 0 1" BorderBrush="DarkGray">
+                                <TextBlock FontSize="16" FontWeight="Bold">TH2882A</TextBlock>
+                            </Border>
+                            <Grid Margin="20">
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="*"/>
+                                    <ColumnDefinition Width="*"/>
+                                    <ColumnDefinition Width="*"/>
+                                </Grid.ColumnDefinitions>
+                                <DockPanel LastChildFill="True">
+                                    <md:PackIcon Margin="10 0" DockPanel.Dock="Left" Kind="AlphaABox" Foreground="#FF2381CF" HorizontalAlignment="Center" VerticalAlignment="Center" Height="40" Width="40"/>
+                                    <TextBox Text="{Binding TH2882A.Values[0], Mode=OneWay}" Style="{StaticResource MaterialDesignFloatingHintTextBox}" md:HintAssist.Hint="Area" IsReadOnly="True" Grid.ColumnSpan="2" Foreground="#FF2196F3"></TextBox>
+                                </DockPanel>
+                                <DockPanel Grid.Column="1" LastChildFill="True">
+                                    <md:PackIcon Margin="10 0" DockPanel.Dock="Left" Kind="AlphaABox" Foreground="#FF2381CF" HorizontalAlignment="Center" VerticalAlignment="Center" Height="40" Width="40"/>
+                                    <TextBox  Text="{Binding TH2882A.Values[5], Mode=OneWay}" Style="{StaticResource MaterialDesignFloatingHintTextBox}" md:HintAssist.Hint="Area" IsReadOnly="True" Grid.ColumnSpan="2" Foreground="#FF2196F3"></TextBox>
+                                </DockPanel>
+                                <DockPanel Grid.Column="2" LastChildFill="True">
+                                    <md:PackIcon Margin="10 0" DockPanel.Dock="Left" Kind="AlphaABox" Foreground="#FF2381CF" HorizontalAlignment="Center" VerticalAlignment="Center" Height="40" Width="40"/>
+                                    <TextBox Text="{Binding TH2882A.Values[10], Mode=OneWay}" Style="{StaticResource MaterialDesignFloatingHintTextBox}" md:HintAssist.Hint="Area" IsReadOnly="True" Grid.ColumnSpan="2" Foreground="#FF2196F3"></TextBox>
+                                </DockPanel>
+                            </Grid>
+                        </StackPanel>
+                    </md:Card>
+                </Grid>
             </StackPanel>
-            <ContentControl s:View.Model="{Binding Msg}" />
-        </DockPanel>
+            <Grid Grid.Row="1">
+
+                <md:Card Margin="20">
+
+                    <DataGrid  MinHeight="220" HorizontalScrollBarVisibility="Visible"
+                          Margin="0 8 0 0"
+                          ItemsSource="{Binding Plc.PLC_FINAL_DATAS}"
+                          CanUserSortColumns="False"
+                          IsReadOnly="True"      
+                          CanUserAddRows="False" />
+                </md:Card>
+            </Grid>
+            <Grid Grid.Row="2" Margin="20 0" MinHeight="200">
+                <md:Card Padding="20" VerticalAlignment="Stretch">
+                    <Grid>
+                        <Grid.RowDefinitions>
+                            <RowDefinition Height="auto"/>
+                            <RowDefinition/>
+                        </Grid.RowDefinitions>
+                        <Border Grid.Row="0" DockPanel.Dock="Top" Margin="0 10" BorderThickness="0 0 0 1" BorderBrush="DarkGray">
+                            <TextBlock FontSize="16" FontWeight="Bold">Message</TextBlock>
+                        </Border>
+                        <ContentControl Grid.Row="1" s:View.Model="{Binding Msg}" />
+                    </Grid>
+                </md:Card>
+            </Grid>
+        </Grid>
     </md:TransitioningContent>
 </UserControl>

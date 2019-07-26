@@ -2,10 +2,10 @@
 <SettingsFile xmlns="http://schemas.microsoft.com/VisualStudio/2004/01/settings" CurrentProfile="(Default)" GeneratedClassNamespace="DAQ.Properties" GeneratedClassName="Settings">
   <Profiles />
   <Settings>
-    <Setting Name="PORT_A" Type="System.String" Scope="User">
+    <Setting Name="PORT_RM3545" Type="System.String" Scope="User">
       <Value Profile="(Default)">COM1</Value>
     </Setting>
-    <Setting Name="PORT_B" Type="System.String" Scope="User">
+    <Setting Name="PORT_TH2883S4" Type="System.String" Scope="User">
       <Value Profile="(Default)">COM2</Value>
     </Setting>
     <Setting Name="PLC_IP" Type="System.String" Scope="User">

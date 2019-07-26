@@ -15,12 +15,12 @@ namespace DAQ.Pages
     {
         [Inject]
         public PlcService PLC { get; set; }
-        public int Pass { get {return PLC.Ints[0]; } }
-        public int Fail { get { return PLC.Ints[1]; } }
-        public int TotalProduct { get => Pass + Fail; }
-        public int Run { get { return PLC.Ints[2]; } }
-        public int Stop { get {  return PLC.Ints[3]; } }
-        public int TotalRun { get => Run + Stop; }
+        public int Pass { get; set; }
+        public int Fail { get; set; }
+        public int TotalProduct { get; set; }
+        public int Run { get; set; } 
+        public int Stop { get; set; }
+        public int TotalRun { get; set; }
         Timer timer = new Timer(500);
         public int PlanProduct
         {

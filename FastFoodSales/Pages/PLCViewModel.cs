@@ -18,7 +18,10 @@ namespace DAQ.Pages
         }
         public void SetValue(KV<bool> kv)
         {
-                PLC.WriteBool(kv.Index, !kv.Value);         
+            Task.Run(() =>
+            {
+                PLC.WriteBool(kv.Index, !kv.Value);
+            });         
         }
         public PLCViewModel(PlcService PLC)
         {

@@ -17,13 +17,17 @@ namespace DAQ
         [Inject]
         IEventAggregator EventAggregator { get; set; }
         [Inject]
-        public PortAService PortAService{get;set;}
+        public RM3545 RM3545{get;set;}
         [Inject]
-        public PortBService PortBService { get; set; }
+        public TH2882A TH2882A { get; set; }
+        [Inject]
+        public TH9320 TH9320 { get; set; }
+        [Inject]
+        public TH2775B TH2775B { get; set; }
         [Inject]
         public MsgViewModel Msg { get; set; }
         [Inject]
-        public OEEViewModel OEE { get; set; }
+        public PlcService Plc { get; set; }
         //[Inject]
         //public CameraService CameraService { get; set; }
 

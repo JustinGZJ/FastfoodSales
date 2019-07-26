@@ -14,7 +14,7 @@ namespace DAQ.Service
     public class PortService : PropertyChangedBase, IPortService, IHandle<EventIO>
     {
         protected SerialPort port = new SerialPort();
-        public virtual string PortName { get; }
+        public virtual string PortName { get; set; }
         public bool IsConnected { get; set; }
         protected IEventAggregator Events { get; set; }
         protected PlcService Plc { get; set; }
@@ -25,19 +25,18 @@ namespace DAQ.Service
 
         public BindableCollection<TestSpecViewModel> TestSpecs { get; set; }
 
-
         public PortService(PlcService plc, IEventAggregator events)
         {
             Events = events;
             Plc = plc;
             Events.Subscribe(this);
             TestSpecs = new BindableCollection<TestSpecViewModel>();
-            for (int i = 0; i < 4; i++)
-            {
-                TestSpecs.Add(new TestSpecViewModel(
-                    ));
-            }
             Events.Subscribe(this);
+        }
+
+        public PortService(IEventAggregator events)
+        {
+            Events = events;
         }
 
         virtual public void UpdateDatas()
@@ -146,7 +145,40 @@ namespace DAQ.Service
     }
     public enum IO_DEF
     {
-        READ_RES = 0,
-        READ_HIP = 1
+        空0_0,
+        空0_1,
+        通讯建立开始,
+        通讯建立完成,
+        OK数据上传开始,
+        OK数据上传完成,
+        NG数据上传开始,
+        NG数据上传完成,
+
+        绝缘数据获取开始,
+        匝间数据1获取开始,
+        匝间数据2获取开始,
+        匝间数据3获取开始,
+        电感数据获取开始,
+        电阻数据获取开始,
+        空1_6,
+        空1_7,
+
+        空2_0,
+        空2_1,
+        空2_2,
+        空2_3,
+        空2_4,
+        空2_5,
+        空2_6,
+        空2_7,
+
+        绝缘数据获取完成,
+        匝间数据1获取完成,
+        匝间数据2获取完成,
+        匝间数据3获取完成,
+        电感数据获取完成,
+        电阻数据获取完成,
+        空3_6,
+        空3_7
     }
 }

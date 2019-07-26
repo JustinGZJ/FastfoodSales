@@ -24,8 +24,6 @@ namespace DAQ
         public MsgViewModel Msg { get; set; }
         [Inject]
         public PLCViewModel PLC { get; set; }
-        [Inject]
-        public CameraViewModel Camera { get; set; }
 
     public bool IsDialogOpen { get { return AlarmList.Count > 0; } }
 
@@ -52,7 +50,7 @@ namespace DAQ
                         ActivateItem(new AboutViewModel());
                         break;
                     case 3:
-                        ActivateItem(Camera);
+                  //      ActivateItem(Camera);
                         break;
                 }
 
