@@ -47,6 +47,9 @@
     <ApplicationIcon>favicon.ico</ApplicationIcon>
   </PropertyGroup>
   <ItemGroup>
+    <Reference Include="Bogus, Version=28.0.3.0, Culture=neutral, PublicKeyToken=fa1bb3f3f218129a, processorArchitecture=MSIL">
+      <HintPath>..\packages\Bogus.28.0.3\lib\net40\Bogus.dll</HintPath>
+    </Reference>
     <Reference Include="ControlzEx, Version=4.0.0.0, Culture=neutral, PublicKeyToken=69f1c32f803d307e, processorArchitecture=MSIL">
       <HintPath>..\packages\ControlzEx.4.0.0-alpha0218\lib\net45\ControlzEx.dll</HintPath>
     </Reference>
@@ -158,6 +161,8 @@
     <Compile Include="Service\Instrament\IPortService.cs" />
     <Compile Include="Service\Instrament\PlcService.cs" />
     <Compile Include="Service\Instrament\TH9320.cs" />
+    <Compile Include="Service\MsgDBSaver.cs" />
+    <Compile Include="Service\MsgFileSaver.cs" />
     <Compile Include="Service\PublishMsgEx.cs" />
     <Compile Include="Service\Instrament\RM3545.cs" />
     <Compile Include="Service\Instrament\TH2775B.cs" />

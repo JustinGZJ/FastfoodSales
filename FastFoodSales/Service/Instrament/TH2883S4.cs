@@ -86,7 +86,7 @@ namespace DAQ.Service
                 }
                 else
                 {
-                    vs[0] *= 100;
+                    vs[0] *= 1;
                 }
                 if (!float.TryParse(s[2], out vs[1]))
                 {
