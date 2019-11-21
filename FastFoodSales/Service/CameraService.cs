@@ -13,217 +13,59 @@ using System.IO;
 
 namespace DAQ.Service
 {
-    public class CameraService : PropertyChangedBase
+    public class CameraData : ISource
     {
-        private const string Path = "camera.txt";
-        SimpleTcpClient Client = null;
-        public CameraService()
+        public string Source { get; set; } = "CameraData";
+        public float X1 { get; set; }
+        public float X2 { get; set; }
+        public float Y1 { get; set; }
+        public float Y2 { get; set; }
+        public string Result { get; set; }
+
+    }
+    public class CameraService : PropertyChangedBase, IHandle<EventIO>
+    {
+        private PlcService _plc;
+        private readonly IEventAggregator _eventAggregator;
+        MsgFileSaver<CameraData> saver = new MsgFileSaver<CameraData>();
+
+        public CameraService([Inject]IEventAggregator eventAggregator, [Inject] PlcService plc)
         {
-            LoadData();
-            StartTxConnect();
-        }
-        [Inject]
-        IEventAggregator Events;
-        [Inject]
-        PlcService PLC;
-        [Inject]
-        MsgDBSaver DBSaver;
-        [Inject]
-        MsgFileSaver<TestSpecViewModel> FileSaver;
-        public void StartTxConnect()
-        {
-            Task.Run(() =>
-            {
-                while (true)
-                {
-                    Connect();
-                    Thread.Sleep(2000);
-                }
-            });
-        }
-        ~CameraService()
-        {
-            SaveData();
+            _plc = plc;
+            _eventAggregator = eventAggregator;
+            _eventAggregator.Subscribe(this);
         }
 
-        public void LoadData()
+        public float X1 { get; private set; }
+        public float X2 { get; private set; }
+        public float Y1 { get; private set; }
+        public float Y2 { get; private set; }
+        public string Result { get; private set; } = "";
+
+        public void Handle(EventIO message)
         {
-            try
+            if(message.Value==false)
+                return;
+            switch (message.Index)
             {
-                if (File.Exists(Path))
-                {
-                    var str = File.ReadAllText(Path);
-                    var obj = JsonConvert.DeserializeObject(str) as List<BindableCollection<TestSpecViewModel>>;
-                    if (obj?.Count == 3)
+                case (int)IO_DEF.READ_CAM:
+                    _plc.WriteBool((int)IO_DEF.READ_CAM, false);
+                    X1 = _plc.KvFloats[1].Value;
+                    X2 = _plc.KvFloats[3].Value;
+                    Y1 = _plc.KvFloats[0].Value;
+                    Y2 = _plc.KvFloats[2].Value;
+                    Result = _plc.KvFloats[4].Value > 0?"OK":"NG";
+                    saver.Process(new CameraData
                     {
-                        C1Values = obj[0];
-                        C2Values = obj[1];
-                        C3Values = obj[2];
-                    }
-                }
+                        X1 = X1,
+                        X2 = X2,
+                        Y1 = Y1,
+                        Y2 = Y2,
+                        Result = Result
+                    });
+                    _plc.Pulse((int)IO_DEF.WRITE_CAM, 200);
+                    break;
             }
-            catch (Exception ex)
-            {
-                Events.Publish(new MsgItem { Level = "E", Time = DateTime.Now, Value = ex.Message });
-                //  throw;
-            }
-        }
-        public void SaveData()
-        {
-            var vs = new List<BindableCollection<TestSpecViewModel>>()
-            {
-                C1Values,C2Values,C3Values
-            };
-            string json = JsonConvert.SerializeObject(vs);
-            File.WriteAllText(Path, json);
-        }
-
-        public bool IsConnected
-        {
-            get
-            {
-                return Client?.TcpClient.Connected == true;
-            }
-        }
-
-        public BindableCollection<TestSpecViewModel> C1Values { get; set; } 
-                = new BindableCollection<TestSpecViewModel>();
-        public BindableCollection<TestSpecViewModel> C2Values { get; set; } 
-                = new BindableCollection<TestSpecViewModel>();
-        public BindableCollection<TestSpecViewModel> C3Values { get; set; }
-                = new BindableCollection<TestSpecViewModel>();
-        public void Connect()
-        {
-            try
-            {
-
-                var r = Client?.TcpClient.Connected;
-                if (r != true)
-                {
-
-                    if (Client != null)
-                    {
-                        Client.Disconnect();
-                        Client.Dispose();
-                    }
-                    Client = new SimpleTcpClient()
-                        .Connect(Properties.Settings.Default.CAMERA_IP,
-                        Properties.Settings.Default.CAMERA_PORT);
-                }
-            }
-            catch (SocketException ex)
-            {
-                Events.Publish(new MsgItem
-                {
-                    Level = "E",
-                    Time = DateTime.Now,
-                    Value = ex.Message
-                });
-            }
-        }
-        private void Client_DelimiterDataReceived(object sender, Message e)
-        {
-            try
-            {
-                var str = e.MessageString;
-                Events.Publish(new MsgItem
-                {
-                    Level = "D",
-                    Time = DateTime.Now,
-                    Value = str
-                });
-                e.ReplyLine("ok");
-                ParseDatas(str);
-            }
-            catch (Exception ex)
-            {
-                Events.Publish(new MsgItem
-                {
-                    Level = "E",
-                    Time = DateTime.Now,
-                    Value = ex.Message
-                });
-                //  throw;
-            }
-        }
-
-        public void ParseDatas(string Msg)
-        {
-
-            var Itesms = Msg.Split(':');
-            if (Itesms.Length > 1)
-            {
-                if (Itesms[0] == "C1")
-                {
-                    var specs = GetTestSpecs(Itesms[0], Itesms[1]);
-                    C1Values.Clear();
-                    C1Values.AddRange(specs);
-                    foreach (var s in specs)
-                    {
-                        FileSaver.Process(s);
-                        DBSaver.Process(s);
-                    }
-                }
-                else if (Itesms[0] == "C2")
-                {
-
-                    var specs = GetTestSpecs(Itesms[0], Itesms[1]);
-                    C2Values.Clear();
-                    C2Values.AddRange(specs);
-                    foreach (var s in specs)
-                    {
-                        //      FileSaver.Process(s);
-                        DBSaver.Process(s);
-                    }
-                }
-                else if (Itesms[0] == "C3")
-                {
-
-                    var specs = GetTestSpecs(Itesms[0], Itesms[1]);
-                    C3Values.Clear();
-                    C3Values.AddRange(specs);
-                    foreach (var s in specs)
-                    {
-                        //         FileSaver.Process(s);
-                        DBSaver.Process(s);
-                    }
-                }
-            }
-        }
-
-        public List<TestSpecViewModel> GetTestSpecs(string source, string content)
-        {
-            var specs = new List<TestSpecViewModel>();
-
-            var Subitems = content.Split(';');
-            foreach (var Subitem in Subitems)
-            {
-                var vals = Subitem.Split(',');
-                if (vals.Length == 5)
-                {
-                    bool[] pr = new bool[3];
-                    pr[0] = float.TryParse(vals[1], out float upper);
-                    pr[1] = float.TryParse(vals[2], out float lower);
-                    pr[2] = float.TryParse(vals[3], out float value);
-                    if (pr.Any(x => x == false))
-                    {
-                        Events.Publish(new MsgItem() { Level = "D", Time = DateTime.Now, Value = $"Camera date parse error:{Subitem}" });
-                        return specs;
-                    }
-                    specs.Add(
-                                new TestSpecViewModel()
-                                {
-                                    Name = vals[0],
-                                    Upper = upper,
-                                    Lower = lower,
-                                    Value = value,
-                                    Result = vals[4].ToUpper().Contains("PASS") ? 1 : -1,
-                                    Source = source
-                                });
-
-                }
-            }
-            return specs;
         }
     }
 }

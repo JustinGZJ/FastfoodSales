@@ -147,6 +147,8 @@ namespace DAQ.Service
     public enum IO_DEF
     {
         READ_RES = 0,
-        READ_HIP = 1
+        READ_HIP = 1,
+        READ_CAM=6,
+        WRITE_CAM=7
     }
 }

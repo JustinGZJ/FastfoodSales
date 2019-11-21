@@ -24,6 +24,11 @@ namespace DAQ.Pages
         {
             this.PLC = PLC;
         }
+
+        public PLCViewModel()
+        {
+
+        }
     };
 }
 public class KV<T> : PropertyChangedBase

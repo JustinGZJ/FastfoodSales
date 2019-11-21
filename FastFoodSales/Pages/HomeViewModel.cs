@@ -23,11 +23,8 @@ namespace DAQ
         [Inject]
         public MsgViewModel Msg { get; set; }
         [Inject]
-        public OEEViewModel OEE { get; set; }
-        //[Inject]
-        //public CameraService CameraService { get; set; }
+        public CameraService CameraService { get; set; }
 
-      
     }
 
 }
