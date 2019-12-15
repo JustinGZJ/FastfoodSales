@@ -100,6 +100,20 @@
     <Reference Include="System.Data.SQLite, Version=1.0.109.0, Culture=neutral, PublicKeyToken=db937bc2d44ff139, processorArchitecture=MSIL">
       <HintPath>..\packages\System.Data.SQLite.Core.1.0.109.2\lib\net46\System.Data.SQLite.dll</HintPath>
     </Reference>
+    <Reference Include="System.Reactive, Version=4.3.0.0, Culture=neutral, PublicKeyToken=94bc3704cddfc263, processorArchitecture=MSIL">
+      <HintPath>..\packages\System.Reactive.4.3.1\lib\net46\System.Reactive.dll</HintPath>
+    </Reference>
+    <Reference Include="System.Runtime.CompilerServices.Unsafe, Version=4.0.4.1, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL">
+      <HintPath>..\packages\System.Runtime.CompilerServices.Unsafe.4.5.2\lib\netstandard2.0\System.Runtime.CompilerServices.Unsafe.dll</HintPath>
+    </Reference>
+    <Reference Include="System.Threading.Tasks.Extensions, Version=4.2.0.1, Culture=neutral, PublicKeyToken=cc7b13ffcd2ddd51, processorArchitecture=MSIL">
+      <HintPath>..\packages\System.Threading.Tasks.Extensions.4.5.3\lib\netstandard2.0\System.Threading.Tasks.Extensions.dll</HintPath>
+    </Reference>
+    <Reference Include="System.ValueTuple, Version=4.0.3.0, Culture=neutral, PublicKeyToken=cc7b13ffcd2ddd51, processorArchitecture=MSIL">
+      <HintPath>..\packages\System.ValueTuple.4.5.0\lib\net461\System.ValueTuple.dll</HintPath>
+    </Reference>
+    <Reference Include="System.Windows" />
+    <Reference Include="System.Windows.Forms" />
     <Reference Include="System.Xml" />
     <Reference Include="Microsoft.CSharp" />
     <Reference Include="System.Core" />
@@ -133,10 +147,6 @@
       <DependentUpon>MsgView.xaml</DependentUpon>
     </Compile>
     <Compile Include="Pages\MsgViewModel.cs" />
-    <Compile Include="Pages\OEEView.xaml.cs">
-      <DependentUpon>OEEView.xaml</DependentUpon>
-    </Compile>
-    <Compile Include="Pages\OEEViewModel.cs" />
     <Compile Include="Pages\PLCView.xaml.cs">
       <DependentUpon>PLCView.xaml</DependentUpon>
     </Compile>
@@ -145,17 +155,7 @@
       <DependentUpon>SettingsView.xaml</DependentUpon>
     </Compile>
     <Compile Include="Pages\SettingsViewModel.cs" />
-    <Compile Include="Service\AlarmService.cs" />
-    <Compile Include="Service\CameraService.cs" />
-    <Compile Include="Service\DataAccess.cs" />
-    <Compile Include="Service\IMsgSaver.cs" />
-    <Compile Include="Service\IPortBService.cs" />
-    <Compile Include="Service\PlcService.cs" />
-    <Compile Include="Service\PortAService.cs" />
-    <Compile Include="Service\PortBService.cs" />
-    <Compile Include="Service\PortService.cs" />
-    <Compile Include="Service\QueueProcess.cs" />
-    <Compile Include="Service\TestSpecViewModel.cs" />
+    <Compile Include="Service\IPlcDataService.cs" />
     <Compile Include="Settings.cs" />
     <Compile Include="UserControl1View.xaml.cs">
       <DependentUpon>UserControl1View.xaml</DependentUpon>
@@ -182,10 +182,6 @@
       <SubType>Code</SubType>
     </Compile>
     <Page Include="Pages\MsgView.xaml">
-      <SubType>Designer</SubType>
-      <Generator>MSBuild:Compile</Generator>
-    </Page>
-    <Page Include="Pages\OEEView.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
@@ -230,12 +226,6 @@
     <None Include="App.config" />
   </ItemGroup>
   <ItemGroup>
-    <Resource Include="Assets\chicken-wings-main.jpg" />
-    <Resource Include="Assets\food.jpg" />
-    <Resource Include="Assets\hamb.jpg" />
-    <Resource Include="Assets\Healthy-Food.jpeg" />
-  </ItemGroup>
-  <ItemGroup>
     <Resource Include="FodyWeavers.xml" />
   </ItemGroup>
   <ItemGroup>
@@ -245,17 +235,12 @@
     <Resource Include="Assets\4.jpg" />
   </ItemGroup>
   <ItemGroup>
-    <Resource Include="Assets\home-about-1.jpg" />
-    <Resource Include="Assets\home-about-2.jpg" />
-    <Resource Include="Assets\home-about-3.jpg" />
-    <Resource Include="Assets\home-about-4.jpg" />
-  </ItemGroup>
-  <ItemGroup>
     <Resource Include="Logo.png" />
   </ItemGroup>
   <ItemGroup>
     <Resource Include="favicon.ico" />
   </ItemGroup>
+  <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <Import Project="..\packages\Fody.3.3.4\build\Fody.targets" Condition="Exists('..\packages\Fody.3.3.4\build\Fody.targets')" />
   <Target Name="EnsureNuGetPackageBuildImports" BeforeTargets="PrepareForBuild">

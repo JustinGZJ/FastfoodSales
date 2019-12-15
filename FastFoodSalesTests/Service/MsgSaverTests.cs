@@ -12,14 +12,6 @@ namespace DAQ.Service.Tests
     [TestClass()]
     public class MsgSaverTests
     {
-        public class poco1:ISource
-        {
-            public string Name { get; set; }
-            public string Source { get; set; }
-            public int Value { get; set; }
-            public int Upper { get; set; }
-            public int Lower { get; set; }
-        }
         [TestMethod()]
         public void MsgSaverTest()
         {

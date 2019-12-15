@@ -6,11 +6,10 @@ using System.Threading.Tasks;
 using Stylet;
 using StyletIoC;
 using DAQ.Pages;
-using DAQ.Service;
 
 namespace DAQ
 {
-    public class MainWindowViewModel : Conductor<object>, IHandle<AlarmItem>
+    public class MainWindowViewModel : Conductor<object>
     {
         int index = 0;
         [Inject]
@@ -25,9 +24,6 @@ namespace DAQ
         [Inject]
         public PLCViewModel PLC { get; set; }
 
-        public bool IsDialogOpen { get { return AlarmList.Count > 0; } }
-
-        public BindableCollection<AlarmItem> AlarmList { get; set; } = new BindableCollection<AlarmItem>();
 
         public object CurrentPage { get; set; }
         public int Index
@@ -56,7 +52,7 @@ namespace DAQ
 
         protected override void OnActivate()
         {
-            Events.Subscribe(this);
+
             base.OnActivate();
         }
         protected override void OnInitialActivate()
@@ -80,23 +76,6 @@ namespace DAQ
             CurrentPage = Msg;
         }
 
-        public void Handle(AlarmItem message)
-        {
-            if (!message.Value)
-            {
-                if(AlarmList.Any(x=>x.Address==message.Address))
-                {
-                    var a = AlarmList.Where(x => x.Address == message.Address);
-                    foreach(var v in a)
-                    {
-                        AlarmList.Remove(v);
-                    }
-                }               
-            }
-            else
-            {
-                AlarmList.Add(message);
-            }
-        }
+    
     }
 }

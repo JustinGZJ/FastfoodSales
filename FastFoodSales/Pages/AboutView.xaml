@@ -9,46 +9,46 @@
             xmlns:md="http://materialdesigninxaml.net/winfx/xaml/themes"
             Height="585.193" Width="1089.808">
     <md:TransitioningContent  OpeningEffect="{md:TransitionEffect Kind=SlideInFromRight, Duration=00:00:0.5}" >
-    <Grid>
-        <StackPanel>
+        <Grid>
+            <StackPanel>
 
                 <TextBlock  Margin="0 30" FontSize="30" HorizontalAlignment="Center">浙江田中精机精髓</TextBlock>
 
-            <TextBlock FontStyle="Italic" Margin="120,0,120,50" TextWrapping="WrapWithOverflow" HorizontalAlignment="Center" TextAlignment="Center">在TANAC开发并开始销售第一台绕线机以来，奠定了田中精机在绕线机行业鼻祖的地位。以后经过数十年不断的创新积累，我们逐步的涉及到消费电子产业（3C）、汽车产业、家电产业等等相关领域，使其成为当之无愧的定制化解决方案的领导者。</TextBlock>
+                <TextBlock FontStyle="Italic" Margin="120,0,120,50" TextWrapping="WrapWithOverflow" HorizontalAlignment="Center" TextAlignment="Center">在TANAC开发并开始销售第一台绕线机以来，奠定了田中精机在绕线机行业鼻祖的地位。以后经过数十年不断的创新积累，我们逐步的涉及到消费电子产业（3C）、汽车产业、家电产业等等相关领域，使其成为当之无愧的定制化解决方案的领导者。</TextBlock>
 
 
-            <WrapPanel  >
-            <md:Card Margin="10" Width="250"  Height="270">
-                <StackPanel>
-                    <Image Stretch="UniformToFill" Source="/DAQ;component/Assets/home-about-1.jpg"></Image>
-                    <TextBlock  Margin="5" FontSize="18" >世界的品牌</TextBlock>
-                    <TextBlock Margin="5 0 5 5" TextWrapping="WrapWithOverflow">
+                <WrapPanel  >
+                    <md:Card Margin="10" Width="250"  Height="275">
+                        <StackPanel>
+                            <Image Stretch="None"  Source="/DAQ;component/Assets/1.jpg" Height="179"></Image>
+                            <TextBlock  Margin="5" FontSize="18" >世界的品牌</TextBlock>
+                            <TextBlock Margin="5 0 5 5" TextWrapping="WrapWithOverflow">
 通过多年的不懈努力以及核心技术积累，TANAC品牌产品获得了全世界客户的高度评价。坚定地巩固了世界品牌的地位。 ...</TextBlock>
-                </StackPanel>
-            </md:Card>
-            <md:Card Margin="10" Width="250" Height="270" >
-                <StackPanel>
-                    <Image Stretch="UniformToFill" Source="/DAQ;component/Assets/home-about-2.jpg"></Image>
-                    <TextBlock  Margin="5" FontSize="18" >日本的技术</TextBlock>
-                    <TextBlock Margin="5 0 5 5" TextWrapping="WrapWithOverflow">田中精机长期致力于高端自动化设备的研发、设计和生产。在TANAC长期培育的技术基础上我们用心设计符合中国工业基础的产品。</TextBlock>
-                </StackPanel>
-            </md:Card>
-            <md:Card Margin="10" Width="250" Height="270">
-                <StackPanel>
-                    <Image Stretch="UniformToFill" Source="/DAQ;component/Assets/home-about-3.jpg"></Image>
-                    <TextBlock  Margin="5" FontSize="18" >中国的价格</TextBlock>
-                    <TextBlock Margin="5 0 5 5" TextWrapping="WrapWithOverflow">在中国市场上保证高品质的同时，较低的价格成为重要的竞争因素。我们田中精机始终注重提供性价比优良的产品并为此而不懈努力。</TextBlock>
-                </StackPanel>
-            </md:Card>
-            <md:Card Margin="10"  Width="250" Height="270">
-                <StackPanel>
-                    <Image Stretch="UniformToFill" Source="/DAQ;component/Assets/home-about-4.jpg"></Image>
-                    <TextBlock  Margin="5" FontSize="18" >一流的服务</TextBlock>
-                    <TextBlock Margin="5 0 5 5" TextWrapping="WrapWithOverflow">完善和强有力的售后服务是田中精机的品牌价值的保障，田中精机的售后服务部是一个由资深工程师组成的强大支持团队，训练有素且经验丰富。</TextBlock>
-                </StackPanel>
-            </md:Card>
-        </WrapPanel>
-        </StackPanel>
-    </Grid>
+                        </StackPanel>
+                    </md:Card>
+                    <md:Card Margin="10" Width="250" Height="275" >
+                        <StackPanel>
+                            <Image  Stretch="None" Source="/DAQ;component/Assets/2.jpg" Height="184" Margin="-5,-5,1,0" ></Image>
+                            <TextBlock  Margin="5" FontSize="18" >日本的技术</TextBlock>
+                            <TextBlock Margin="5 0 5 5" TextWrapping="WrapWithOverflow">田中精机长期致力于高端自动化设备的研发、设计和生产。在TANAC长期培育的技术基础上我们用心设计符合中国工业基础的产品。</TextBlock>
+                        </StackPanel>
+                    </md:Card>
+                    <md:Card Margin="10" Width="250" Height="275">
+                        <StackPanel>
+                            <Image Stretch="None" Source="/DAQ;component/Assets/3.jpg" Margin="-5" Height="184"></Image>
+                            <TextBlock  Margin="5 10 5 5" FontSize="18" >中国的价格</TextBlock>
+                            <TextBlock Margin="5 0 5 5" TextWrapping="WrapWithOverflow">在中国市场上保证高品质的同时，较低的价格成为重要的竞争因素。我们田中精机始终注重提供性价比优良的产品并为此而不懈努力。</TextBlock>
+                        </StackPanel>
+                    </md:Card>
+                    <md:Card Margin="10"  Width="250" Height="275">
+                        <StackPanel>
+                            <Image Stretch="None" Source="/DAQ;component/Assets/4.jpg" Height="185" Margin="-5"></Image>
+                            <TextBlock  Margin="5 10 5 5" FontSize="18" >一流的服务</TextBlock>
+                            <TextBlock Margin="5 0 5 5" TextWrapping="WrapWithOverflow">完善和强有力的售后服务是田中精机的品牌价值的保障，田中精机的售后服务部是一个由资深工程师组成的强大支持团队，训练有素且经验丰富。</TextBlock>
+                        </StackPanel>
+                    </md:Card>
+                </WrapPanel>
+            </StackPanel>
+        </Grid>
     </md:TransitioningContent>
 </UserControl>
