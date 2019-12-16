@@ -15,6 +15,18 @@
     <md:TransitioningContent OpeningEffect="{md:TransitionEffect Kind=SlideInFromRight, Duration=00:00:0.5}">
         <DockPanel LastChildFill="True">
             <StackPanel DockPanel.Dock="Top">
+                <ListView ItemsSource="{Binding Servos}">
+                    <ListView.View>
+                        <GridView>
+
+                            <GridViewColumn Header="No." DisplayMemberBinding="{Binding Name}"/>
+                            <GridViewColumn Header="工位1" DisplayMemberBinding="{Binding Addr1}"/>
+                            <GridViewColumn Header="工位2" DisplayMemberBinding="{Binding Addr2}"/>
+                            <GridViewColumn Header="工位3" DisplayMemberBinding="{Binding Addr3}"/>
+                            <GridViewColumn Header="工位4" DisplayMemberBinding="{Binding Addr4}"/>
+                        </GridView>
+                    </ListView.View>
+                </ListView>
             </StackPanel>
             <DockPanel>
                 <ContentControl s:View.Model="{Binding Msg}"/>
