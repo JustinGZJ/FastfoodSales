@@ -140,25 +140,36 @@
       <DependentUpon>AboutView.xaml</DependentUpon>
     </Compile>
     <Compile Include="Pages\AboutViewModel.cs" />
+    <Compile Include="Pages\AppFolders.cs" />
+    <Compile Include="Pages\ConfigureFile.cs" />
+    <Compile Include="Pages\ConfigureKeys.cs" />
+    <Compile Include="Pages\DAQFiles.cs" />
     <Compile Include="Pages\FileLocator.cs" />
+    <Compile Include="Pages\FileLocatorConverter.cs" />
     <Compile Include="Pages\HomeView.xaml.cs">
       <DependentUpon>HomeView.xaml</DependentUpon>
     </Compile>
     <Compile Include="Pages\HomeViewModel.cs" />
+    <Compile Include="Pages\IConfigureFile.cs" />
+    <Compile Include="Pages\JsonExtensions.cs" />
     <Compile Include="Pages\MainWindowViewModel.cs" />
     <Compile Include="Pages\MsgItem.cs" />
     <Compile Include="Pages\MsgView.xaml.cs">
       <DependentUpon>MsgView.xaml</DependentUpon>
     </Compile>
     <Compile Include="Pages\MsgViewModel.cs" />
+    <Compile Include="Pages\PlcParas.cs" />
     <Compile Include="Pages\PLCView.xaml.cs">
       <DependentUpon>PLCView.xaml</DependentUpon>
     </Compile>
     <Compile Include="Pages\PLCViewModel.cs" />
+    <Compile Include="Pages\ServoLocation.cs" />
+    <Compile Include="Pages\ServoLocationVm.cs" />
     <Compile Include="Pages\SettingsView.xaml.cs">
       <DependentUpon>SettingsView.xaml</DependentUpon>
     </Compile>
     <Compile Include="Pages\SettingsViewModel.cs" />
+    <Compile Include="Pages\ValueChangedEventArgs.cs" />
     <Compile Include="Service\PLCDataAccess.cs" />
     <Compile Include="Settings.cs" />
     <Compile Include="UserControl1View.xaml.cs">

@@ -111,6 +111,7 @@
                 </Grid>
                 <Grid>
                     <ContentControl Grid.Column="0" x:Name="content" s:View.Model="{Binding ActiveItem}" MinWidth="500"/>
+                    <materialDesign:Snackbar MessageQueue="{Binding Queue}"/>
                 </Grid>
             </Grid>
         </Grid>

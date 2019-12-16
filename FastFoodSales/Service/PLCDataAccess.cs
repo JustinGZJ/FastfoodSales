@@ -39,7 +39,7 @@ namespace DAQ
         public string Ip { get; set; }
         public int Port { get; set; }
 
-        public string TriggerAddress { get; set; } = "M300000";
+        public string TriggerAddress { get; set; } = "M30000";
 
         public event Action<byte[]> OnDataReady;
         public event Action<string> OnError;

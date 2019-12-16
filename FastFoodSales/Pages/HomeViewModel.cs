@@ -1,110 +1,17 @@
 ﻿using StyletIoC;
 using Stylet;
 using DAQ.Pages;
-using Newtonsoft.Json.Linq;
 using System;
 using System.Linq;
-using Newtonsoft.Json;
 using System.Collections.Generic;
 using System.IO;
 using System.Net;
 using CsvHelper;
 using System.Dynamic;
 
-namespace DAQ
-{
-    public static class AppFolders
-    {
-        static AppFolders()
-        {
-            Directory.CreateDirectory(Apps);
-            Directory.CreateDirectory(Logs);
-            Directory.CreateDirectory(Users);
-        }
-
-        /// <summary>
-        /// It represents the path where the "Accelerider.Windows.exe" is located.
-        /// </summary>
-        public static readonly string MainProgram = AppDomain.CurrentDomain.BaseDirectory;
-
-        /// <summary>
-        /// %AppData%\DAQ
-        /// </summary>
-        public static readonly string AppData = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData), "DAQ");
-
-        /// <summary>
-        /// %AppData%\DAQ\Apps
-        /// </summary>
-        public static readonly string Apps = Path.Combine(AppData, nameof(Apps));
-
-        /// <summary>
-        /// %AppData%\DAQ\Logs
-        /// </summary>
-        public static readonly string Logs = Path.Combine(AppData, nameof(Logs));
-
-        /// <summary>
-        /// %AppData%\DAQ\Users
-        /// </summary>
-        public static readonly string Users = Path.Combine(AppData, nameof(Users));
-    }
-}
 
 namespace DAQ
 {
-    public static class DAQFiles
-    {
-        /// <summary>
-        /// %AppData%\Accelerider\accelerider.config
-        /// </summary>
-        public static readonly string Configure = Path.Combine(AppFolders.AppData, "DAQ.config");
-    }
-
-}
-
-public class ServoLocation
-{
-    public string Name { get; set; }
-    public string Addr1 { get; set; }
-    public string Addr2 { get; set; }
-    public string Addr3 { get; set; }
-    public string Addr4 { get; set; }
-}
-
-namespace DAQ
-{
-    public class ServoLocationVm : PropertyChangedBase
-    {
-        private string name;
-        public string Name
-        {
-            get { return name; }
-            set { SetAndNotify(ref name, value); }
-        }
-        private double addr1;
-        public double Addr1
-        {
-            get { return addr1; }
-            set { SetAndNotify(ref addr1, value); }
-        }
-        private double addr2;
-        public double Addr2
-        {
-            get { return addr2; }
-            set { SetAndNotify(ref addr2, value); }
-        }
-        private double addr3;
-        public double Addr3
-        {
-            get { return addr3; }
-            set { SetAndNotify(ref addr3, value); }
-        }
-        private double addr4;
-        public double Addr4
-        {
-            get { return addr4; }
-            set { SetAndNotify(ref addr4, value); }
-        }
-    }
 
     public class HomeViewModel : Screen
     {
@@ -113,7 +20,7 @@ namespace DAQ
         MsgViewModel _msg;
         private MCPLCDataAccess _dataAccess;
         private IConfigureFile configure;
-        private List<ServoLocation> _locations;
+        PlcParas plcparas;
 
         BindableCollection<ServoLocationVm> servos = new BindableCollection<ServoLocationVm>();
 
@@ -124,23 +31,31 @@ namespace DAQ
             _dataAccess = dataAccess;
             this.configure = configure;
 
-            configure = InitialConnection(configure);
+            InitialConnection(configure);
         }
 
         private IConfigureFile InitialConnection(IConfigureFile configure)
         {
+
             configure = configure.Load();
-            var plcparas = configure.GetValue<PlcParas>(ConfigureKeys.PLCParas);
-            if (plcparas == null)
+            plcparas = configure.GetValue<PlcParas>(ConfigureKeys.PLCParas);
+            if (Plcparas == null)
             {
                 plcparas = new PlcParas();
-                configure.SetValue(ConfigureKeys.PLCParas, plcparas);
+                Plcparas.ServoLocations = 
+                new List<ServoLocation>
+                {
+                    new ServoLocation() { Name = "Z1", Addr1 = "D562", Addr2 = "D568", Addr3 = "D572", Addr4 = "D578" },
+                    new ServoLocation() { Name = "Z2", Addr1 = "D662", Addr2 = "D668", Addr3 = "D672", Addr4 = "D678" },
+                    new ServoLocation() { Name = "Z3", Addr1 = "D762", Addr2 = "D768", Addr3 = "D772", Addr4 = "D778" },
+                    new ServoLocation() { Name = "Z4", Addr1 = "D862", Addr2 = "D868", Addr3 = "D872", Addr4 = "D878" }
+                };
+                configure = configure.SetValue(ConfigureKeys.PLCParas, Plcparas);
             }
-            _locations = plcparas.ServoLocations;
-            _dataAccess.Ip = plcparas.Ip;
-            _dataAccess.Port = plcparas.Port;
-            _dataAccess.TriggerAddress = plcparas.TriggerAddress;
-            var vs = _locations.SelectMany(x => new[] { x.Addr1, x.Addr2, x.Addr3, x.Addr4 }).Select(m => m.Substring(1));
+            _dataAccess.Ip = Plcparas.Ip;
+            _dataAccess.Port = Plcparas.Port;
+            _dataAccess.TriggerAddress = Plcparas.TriggerAddress;
+            var vs = Locations.SelectMany(x => new[] { x.Addr1, x.Addr2, x.Addr3, x.Addr4 }).Select(m => m.Substring(1));
             maxIndex = vs.Select(x => int.Parse(x)).Max();
             minIndex = vs.Select(x => int.Parse(x)).Min();
             _dataAccess.StartAddress = $"D{minIndex}";
@@ -164,7 +79,7 @@ namespace DAQ
                 {
                     dynamic record = new ExpandoObject();
                     record.DateTime = DateTime.Now;
-                    record.Z1Station1 =servos[0].Addr1;
+                    record.Z1Station1 = servos[0].Addr1;
                     record.Z1Station2 = servos[0].Addr2;
                     record.Z1Station3 = servos[0].Addr3;
                     record.Z1Station4 = servos[0].Addr4;
@@ -181,7 +96,7 @@ namespace DAQ
                     record.Z4Station3 = servos[3].Addr3;
                     record.Z4Station4 = servos[3].Addr4;
                     csv.WriteRecord(record);
-                }                
+                }
             }
         }
 
@@ -194,7 +109,7 @@ namespace DAQ
 
         private void _dataAccess_OnDataReady(byte[] obj)
         {
-            foreach (var loc in _locations)
+            foreach (var loc in Locations)
             {
                 var vm = Servos.FirstOrDefault(x => x.Name == loc.Name);
                 if (vm == null)
@@ -209,7 +124,29 @@ namespace DAQ
             }
         }
 
+        public void ChangeData()
+        {
+            configure.Load();
+            var plcparas = configure.GetValue<PlcParas>(ConfigureKeys.PLCParas);
+            foreach (var vm in Locations)
+            {
+                var para = plcparas.ServoLocations.FirstOrDefault(x => x.Name == vm.Name);                
+                if (para != null)
+                {
+                    para.Addr1 = vm.Addr1;
+                    para.Addr2 = vm.Addr2;
+                    para.Addr3 = vm.Addr3;
+                    para.Addr4 = vm.Addr4;
+                }
+            }
+            plcparas.Ip = Plcparas.Ip;
+            plcparas.Port = Plcparas.Port;
+            configure.SetValue(ConfigureKeys.PLCParas, plcparas);
+        }
+
         public BindableCollection<ServoLocationVm> Servos { get => servos; set => servos = value; }
+        public List<ServoLocation> Locations { get => Plcparas.ServoLocations;  }
+        public PlcParas Plcparas { get => plcparas;  }
 
         protected override void OnInitialActivate()
         {
@@ -225,170 +162,4 @@ namespace DAQ
 
 namespace DAQ
 {
-    public class ValueChangedEventArgs : EventArgs
-    {
-        public string KeyName { get; }
-
-        public ValueChangedEventArgs(string keyName) => KeyName = keyName;
-    }
-
-    public static class ConfigureKeys
-    {
-        public static string PLCParas => nameof(PLCParas);
-    }
-
-    public class PlcParas
-    {
-        public int Port { get; set; } = 5000;
-        public string Ip { get; set; } = "127.0.0.1";
-        public List<ServoLocation> ServoLocations { get; set; } =
-            new List<ServoLocation>
-                {
-                    new ServoLocation() { Name = "Z1", Addr1 = "D562", Addr2 = "D568", Addr3 = "D572", Addr4 = "D578" },
-                    new ServoLocation() { Name = "Z2", Addr1 = "D662", Addr2 = "D668", Addr3 = "D672", Addr4 = "D678" },
-                    new ServoLocation() { Name = "Z3", Addr1 = "D762", Addr2 = "D768", Addr3 = "D772", Addr4 = "D778" },
-                    new ServoLocation() { Name = "Z4", Addr1 = "D862", Addr2 = "D868", Addr3 = "D872", Addr4 = "D878" }
-                };
-        public string TriggerAddress { get; set; } = "M300000";
-    }
-}
-
-namespace DAQ
-{
-    public static class JsonExtensions
-    {
-        public static readonly JsonSerializerSettings JsonSerializerSettings = new JsonSerializerSettings { TypeNameHandling = TypeNameHandling.Auto };
-        public static readonly JsonSerializerSettings JsonDeserializerSettings = new JsonSerializerSettings { TypeNameHandling = TypeNameHandling.Auto };
-        public static readonly FileLocatorConverter FileLocatorConverter = new FileLocatorConverter();
-
-        static JsonExtensions()
-        {
-            JsonSerializerSettings.Converters.Add(FileLocatorConverter);
-        }
-
-        public static string ToJson<T>(this T @object, Formatting formatting = Formatting.None)
-        {
-            var type = @object.GetType();
-
-            return typeof(T) != type
-                ? JsonConvert.SerializeObject(@object, typeof(T), formatting, JsonSerializerSettings)
-                : JsonConvert.SerializeObject(@object, formatting, JsonSerializerSettings);
-        }
-
-        public static T ToObject<T>(this string json)
-        {
-            return !string.IsNullOrWhiteSpace(json)
-                ? JsonConvert.DeserializeObject<T>(json, JsonDeserializerSettings)
-                : default;
-        }
-
-
-    }
-}
-
-namespace DAQ
-{
-    public class FileLocatorConverter : JsonConverter
-    {
-        public override void WriteJson(JsonWriter writer, object value, JsonSerializer serializer)
-        {
-            var fileLocator = (FileLocator)value;
-            writer.WriteValue(fileLocator.FullPath);
-        }
-
-        public override object ReadJson(JsonReader reader, Type objectType, object existingValue, JsonSerializer serializer)
-        {
-            throw new NotSupportedException();
-        }
-
-        public override bool CanConvert(Type objectType) => objectType == typeof(FileLocator);
-    }
-}
-
-namespace DAQ
-{
-    public class ConfigureFile : IConfigureFile
-    {
-        private JObject _storage = new JObject();
-        private string _filePath = DAQFiles.Configure;
-
-        public event EventHandler<ValueChangedEventArgs> ValueChanged;
-
-        public bool Contains(string key) => _storage.Values().Any(token => token.Path == key);
-
-        public T GetValue<T>(string key) => (_storage[key]?.ToString() ?? string.Empty).ToObject<T>();
-
-        public IConfigureFile SetValue<T>(string key, T value)
-        {
-            if (EqualityComparer<T>.Default.Equals(GetValue<T>(key), value)) return this;
-
-            _storage[key] = value.ToJson(Formatting.Indented);
-            Save();
-            ValueChanged?.Invoke(this, new ValueChangedEventArgs(key));
-
-            return this;
-        }
-
-        public IConfigureFile Load(string filePath = null)
-        {
-            if (!string.IsNullOrEmpty(filePath)) _filePath = filePath;
-
-            if (!File.Exists(_filePath))
-            {
-                _storage = new JObject(JObject.Parse("{}"));
-                Save();
-            }
-            _storage = JObject.Parse(File.ReadAllText(_filePath));
-
-            return this;
-        }
-
-        public IConfigureFile Clear()
-        {
-            _storage = new JObject();
-            Save();
-            return this;
-        }
-
-        public void Delete()
-        {
-            Clear();
-            File.Delete(_filePath);
-        }
-
-
-        private void Save() => WriteToLocal(_filePath, _storage.ToString(Formatting.Indented));
-
-        private void WriteToLocal(string path, string text)
-        {
-            try
-            {
-                File.WriteAllText(path, text);
-            }
-            catch (IOException)
-            {
-                WriteToLocal(path, text);
-            }
-        }
-    }
-}
-
-namespace DAQ
-{
-    public interface IConfigureFile
-    {
-        event EventHandler<ValueChangedEventArgs> ValueChanged;
-
-        bool Contains(string key);
-
-        T GetValue<T>(string key);
-
-        IConfigureFile SetValue<T>(string key, T value);
-
-        IConfigureFile Load(string filePath = null);
-
-        IConfigureFile Clear();
-
-        void Delete();
-    }
 }

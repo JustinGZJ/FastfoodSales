@@ -13,24 +13,66 @@
               d:DataContext="{d:DesignInstance  local:HomeViewModel}"
              >
     <md:TransitioningContent OpeningEffect="{md:TransitionEffect Kind=SlideInFromRight, Duration=00:00:0.5}">
-        <DockPanel LastChildFill="True">
-            <StackPanel DockPanel.Dock="Top">
-                <ListView ItemsSource="{Binding Servos}">
-                    <ListView.View>
-                        <GridView>
-
-                            <GridViewColumn Header="No." DisplayMemberBinding="{Binding Name}"/>
-                            <GridViewColumn Header="工位1" DisplayMemberBinding="{Binding Addr1}"/>
-                            <GridViewColumn Header="工位2" DisplayMemberBinding="{Binding Addr2}"/>
-                            <GridViewColumn Header="工位3" DisplayMemberBinding="{Binding Addr3}"/>
-                            <GridViewColumn Header="工位4" DisplayMemberBinding="{Binding Addr4}"/>
-                        </GridView>
-                    </ListView.View>
-                </ListView>
-            </StackPanel>
-            <DockPanel>
-                <ContentControl s:View.Model="{Binding Msg}"/>
-            </DockPanel>
-        </DockPanel>
+        <md:Flipper VerticalAlignment="Top"  Height="300">
+            <md:Flipper.FrontContent>
+                <Grid >
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="30"/>
+                        <RowDefinition Height="*"/>
+                    </Grid.RowDefinitions>
+                    <Grid Grid.Row="0">
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="*"/>
+                            <ColumnDefinition Width="auto"/>
+                        </Grid.ColumnDefinitions>
+                        <StackPanel Orientation="Horizontal" Grid.Column="0">
+                            <md:PackIcon VerticalAlignment="Center" Kind="React"></md:PackIcon>
+                            <TextBlock  VerticalAlignment="Center">Axis Gap</TextBlock>
+                        </StackPanel>
+                        <Button Grid.Column="1"  Style="{StaticResource MaterialDesignFlatButton}" Command="{x:Static md:Flipper.FlipCommand}">
+                            <md:PackIcon Kind="ArrowRight"/>
+                        </Button>
+                    </Grid>
+                    <ListView Grid.Row="1" ItemsSource="{Binding Servos}">
+                        <ListView.View>
+                            <GridView>
+                                <GridViewColumn Header="No." DisplayMemberBinding="{Binding Name}"/>
+                                <GridViewColumn Header="工位1" DisplayMemberBinding="{Binding Addr1}"/>
+                                <GridViewColumn Header="工位2" DisplayMemberBinding="{Binding Addr2}"/>
+                                <GridViewColumn Header="工位3" DisplayMemberBinding="{Binding Addr3}"/>
+                                <GridViewColumn Header="工位4" DisplayMemberBinding="{Binding Addr4}"/>
+                            </GridView>
+                        </ListView.View>
+                    </ListView>
+                </Grid>
+            </md:Flipper.FrontContent>
+            <md:Flipper.BackContent>
+                <Grid  VerticalAlignment="Top">
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="30"/>
+                        <RowDefinition Height="auto"/>
+                        <RowDefinition Height="auto"/>
+                        <RowDefinition Height="30"/>
+                    </Grid.RowDefinitions>
+                    <StackPanel Orientation="Horizontal">
+                        <Button Style="{StaticResource MaterialDesignFlatButton}" Command="{x:Static md:Flipper.FlipCommand}" >
+                            <md:PackIcon Kind="ArrowBack"/>
+                        </Button>
+                        <TextBlock VerticalAlignment="Center">地址设置</TextBlock>
+                    </StackPanel>
+                    <DataGrid Grid.Row="1" Background="Transparent" CanUserAddRows="False" CanUserSortColumns="False" ItemsSource="{Binding Locations}">
+                    </DataGrid>
+                    <StackPanel  Grid.Row="2">
+                        <StackPanel Orientation="Horizontal">
+                            <TextBox md:HintAssist.Hint="MC IP" Text="{Binding Plcparas.Ip}" md:HintAssist.IsFloating="True" Width="150"></TextBox>
+                            <TextBox md:HintAssist.Hint="Port" Text="{Binding Plcparas.Port}" md:HintAssist.IsFloating="True" Width="30"/>
+                        </StackPanel>
+                    </StackPanel>
+                    <StackPanel Grid.Row="3" Orientation="Horizontal" HorizontalAlignment="Right">
+                        <Button Style="{StaticResource MaterialDesignFlatButton}" Command="{s:Action ChangeData}">OK</Button>
+                    </StackPanel>
+                </Grid>
+            </md:Flipper.BackContent>
+        </md:Flipper>
     </md:TransitioningContent>
 </UserControl>

@@ -6,14 +6,15 @@ using System.Threading.Tasks;
 using Stylet;
 using StyletIoC;
 using DAQ.Pages;
+using MaterialDesignThemes.Wpf;
 
 namespace DAQ
 {
-    public class MainWindowViewModel : Conductor<object>
+    public class MainWindowViewModel : Conductor<object>,IHandle<MsgItem>
     {
+        ISnackbarMessageQueue queue = new SnackbarMessageQueue();
         int index = 0;
-        [Inject]
-        public IEventAggregator Events { get; set; }
+        IEventAggregator Events { get;  }
 
         [Inject]
         public HomeViewModel Home { get; set; }
@@ -23,6 +24,12 @@ namespace DAQ
         public MsgViewModel Msg { get; set; }
         [Inject]
         public PLCViewModel PLC { get; set; }
+
+        public MainWindowViewModel( IEventAggregator Events)
+        {
+            this.Events = Events;
+            Events.Subscribe(this);
+        }
 
 
         public object CurrentPage { get; set; }
@@ -50,9 +57,10 @@ namespace DAQ
             }
         }
 
+        public ISnackbarMessageQueue Queue { get => queue; set => queue = value; }
+
         protected override void OnActivate()
         {
-
             base.OnActivate();
         }
         protected override void OnInitialActivate()
@@ -76,6 +84,9 @@ namespace DAQ
             CurrentPage = Msg;
         }
 
-    
+        public void Handle(MsgItem message)
+        {
+            queue.Enqueue(message.Value);
+        }
     }
 }
