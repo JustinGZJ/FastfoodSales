@@ -12,8 +12,10 @@
              d:DesignHeight="600" d:DesignWidth="1000"
               d:DataContext="{d:DesignInstance  local:HomeViewModel}"
              >
+    <UserControl.Resources>
+    </UserControl.Resources>
     <md:TransitioningContent OpeningEffect="{md:TransitionEffect Kind=SlideInFromRight, Duration=00:00:0.5}">
-        <md:Flipper VerticalAlignment="Top"  Height="300">
+        <md:Flipper VerticalAlignment="Top"  Height="500">
             <md:Flipper.FrontContent>
                 <Grid >
                     <Grid.RowDefinitions>
@@ -36,7 +38,7 @@
                     <ListView Grid.Row="1" ItemsSource="{Binding Servos}">
                         <ListView.View>
                             <GridView>
-                                <GridViewColumn Header="No." DisplayMemberBinding="{Binding Name}"/>
+                                <GridViewColumn Header="No."   DisplayMemberBinding="{Binding Name}"/>
                                 <GridViewColumn Header="工位1" DisplayMemberBinding="{Binding Addr1}"/>
                                 <GridViewColumn Header="工位2" DisplayMemberBinding="{Binding Addr2}"/>
                                 <GridViewColumn Header="工位3" DisplayMemberBinding="{Binding Addr3}"/>
@@ -63,10 +65,9 @@
                     <DataGrid Grid.Row="1" Background="Transparent" CanUserAddRows="False" CanUserSortColumns="False" ItemsSource="{Binding Locations}">
                     </DataGrid>
                     <StackPanel  Grid.Row="2">
-                        <StackPanel Orientation="Horizontal">
-                            <TextBox md:HintAssist.Hint="MC IP" Text="{Binding Plcparas.Ip}" md:HintAssist.IsFloating="True" Width="150"></TextBox>
-                            <TextBox md:HintAssist.Hint="Port" Text="{Binding Plcparas.Port}" md:HintAssist.IsFloating="True" Width="30"/>
-                        </StackPanel>
+                        <TextBox md:HintAssist.Hint="PLC IP" Text="{Binding Plcparas.Ip}" Foreground="Black" md:HintAssist.IsFloating="True" ></TextBox>
+                        <TextBox md:HintAssist.Hint="Port" Text="{Binding Plcparas.Port}" Foreground="Black" md:HintAssist.IsFloating="True" />
+                        <TextBox md:HintAssist.Hint="Trig Address" Text="{Binding Plcparas.TriggerAddress}" Foreground="Black" md:HintAssist.IsFloating="True" />
                     </StackPanel>
                     <StackPanel Grid.Row="3" Orientation="Horizontal" HorizontalAlignment="Right">
                         <Button Style="{StaticResource MaterialDesignFlatButton}" Command="{s:Action ChangeData}">OK</Button>

@@ -66,7 +66,7 @@ namespace DAQ
                 {
                     ReadData();
                     ReadTriger();
-                    Thread.Sleep(10);
+                    Thread.Sleep(20);
                 }
             }, _ct.Token);
         }

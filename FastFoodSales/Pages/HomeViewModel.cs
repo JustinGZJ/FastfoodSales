@@ -8,7 +8,9 @@ using System.IO;
 using System.Net;
 using CsvHelper;
 using System.Dynamic;
-
+using System.Text.RegularExpressions;
+using System.Windows.Controls;
+using System.Globalization;
 
 namespace DAQ
 {
@@ -42,7 +44,7 @@ namespace DAQ
             if (Plcparas == null)
             {
                 plcparas = new PlcParas();
-                Plcparas.ServoLocations = 
+                Plcparas.ServoLocations =
                 new List<ServoLocation>
                 {
                     new ServoLocation() { Name = "Z1", Addr1 = "D562", Addr2 = "D568", Addr3 = "D572", Addr4 = "D578" },
@@ -52,6 +54,7 @@ namespace DAQ
                 };
                 configure = configure.SetValue(ConfigureKeys.PLCParas, Plcparas);
             }
+            _dataAccess.Stop();
             _dataAccess.Ip = Plcparas.Ip;
             _dataAccess.Port = Plcparas.Port;
             _dataAccess.TriggerAddress = Plcparas.TriggerAddress;
@@ -69,34 +72,47 @@ namespace DAQ
             _dataAccess.OnDataTriger += _dataAccess_OnDataTriger;
             return configure;
         }
+        CsvWriter csvWriter = null;
+        string _fileDate = DateTime.Today.ToString("yyyyMMdd");
+        StreamWriter writer = null;
+        private CsvWriter GetWriter()
+        {
+            if (_fileDate != DateTime.Today.ToString("yyyyMMdd") || csvWriter == null || writer == null)
+            {
+                csvWriter?.Flush();
+                csvWriter?.Dispose();
+                writer?.Close();
+                writer?.Dispose();
+                writer = new StreamWriter(Path.Combine(AppFolders.Logs, DateTime.Today.ToString("yyyyMMdd") + ".csv"), true);
+                csvWriter = new CsvWriter(writer);
+            }
+            return csvWriter;
+        }
 
         private void _dataAccess_OnDataTriger(bool obj)
         {
-            using (var writer = new StreamWriter(Path.Combine(AppFolders.Logs, DateTime.Today.ToString("yyyyMMdd") + ".csv")))
-            using (var csv = new CsvWriter(writer))
+            if (servos.Count >= 3)
             {
-                if (servos.Count >= 3)
-                {
-                    dynamic record = new ExpandoObject();
-                    record.DateTime = DateTime.Now;
-                    record.Z1Station1 = servos[0].Addr1;
-                    record.Z1Station2 = servos[0].Addr2;
-                    record.Z1Station3 = servos[0].Addr3;
-                    record.Z1Station4 = servos[0].Addr4;
-                    record.Z2Station1 = servos[1].Addr1;
-                    record.Z2Station2 = servos[1].Addr2;
-                    record.Z2Station3 = servos[1].Addr3;
-                    record.Z2Station4 = servos[1].Addr4;
-                    record.Z3Station1 = servos[2].Addr1;
-                    record.Z3Station2 = servos[2].Addr2;
-                    record.Z3Station3 = servos[2].Addr3;
-                    record.Z3Station4 = servos[2].Addr4;
-                    record.Z4Station1 = servos[3].Addr1;
-                    record.Z4Station2 = servos[3].Addr2;
-                    record.Z4Station3 = servos[3].Addr3;
-                    record.Z4Station4 = servos[3].Addr4;
-                    csv.WriteRecord(record);
-                }
+                dynamic record = new ExpandoObject();
+                record.DateTime = DateTime.Now;
+                record.Z1Station1 = servos[0].Addr1;
+                record.Z1Station2 = servos[0].Addr2;
+                record.Z1Station3 = servos[0].Addr3;
+                record.Z1Station4 = servos[0].Addr4;
+                record.Z2Station1 = servos[1].Addr1;
+                record.Z2Station2 = servos[1].Addr2;
+                record.Z2Station3 = servos[1].Addr3;
+                record.Z2Station4 = servos[1].Addr4;
+                record.Z3Station1 = servos[2].Addr1;
+                record.Z3Station2 = servos[2].Addr2;
+                record.Z3Station3 = servos[2].Addr3;
+                record.Z3Station4 = servos[2].Addr4;
+                record.Z4Station1 = servos[3].Addr1;
+                record.Z4Station2 = servos[3].Addr2;
+                record.Z4Station3 = servos[3].Addr3;
+                record.Z4Station4 = servos[3].Addr4;
+                this.GetWriter().WriteRecord(record);
+                writer.Flush();
             }
         }
 
@@ -124,13 +140,40 @@ namespace DAQ
             }
         }
 
+
+
         public void ChangeData()
         {
             configure.Load();
+            var regex = new Regex(@"D(\d{1,6})");
             var plcparas = configure.GetValue<PlcParas>(ConfigureKeys.PLCParas);
+            var r = Locations.SelectMany(x => new[] { x.Addr1, x.Addr2, x.Addr3, x.Addr4 })
+                              .Where(m => !regex.IsMatch(m));
+            if (r.Any())
+            {
+                _eventAggregator.Publish(
+                    new MsgItem()
+                    {
+                        Level = "D",
+                        Time = DateTime.Now,
+                        Value = string.Join(",", r.ToArray() + " 格式不正确")
+                    }
+                   );
+                return;
+            }
+            if (!IPAddress.TryParse(this.Plcparas.Ip, out var address))
+            {
+                _eventAggregator.Publish(new MsgItem()
+                {
+                    Level = "D",
+                    Time = DateTime.Now,
+                    Value = "PLC IP 格式不正确"
+                });
+                return;
+            }
             foreach (var vm in Locations)
             {
-                var para = plcparas.ServoLocations.FirstOrDefault(x => x.Name == vm.Name);                
+                var para = plcparas.ServoLocations.FirstOrDefault(x => x.Name == vm.Name);
                 if (para != null)
                 {
                     para.Addr1 = vm.Addr1;
@@ -141,12 +184,13 @@ namespace DAQ
             }
             plcparas.Ip = Plcparas.Ip;
             plcparas.Port = Plcparas.Port;
-            configure.SetValue(ConfigureKeys.PLCParas, plcparas);
+            configure = configure.SetValue(ConfigureKeys.PLCParas, plcparas);
+            InitialConnection(configure);
         }
 
         public BindableCollection<ServoLocationVm> Servos { get => servos; set => servos = value; }
-        public List<ServoLocation> Locations { get => Plcparas.ServoLocations;  }
-        public PlcParas Plcparas { get => plcparas;  }
+        public List<ServoLocation> Locations { get => Plcparas.ServoLocations; }
+        public PlcParas Plcparas { get => plcparas; }
 
         protected override void OnInitialActivate()
         {
@@ -162,4 +206,26 @@ namespace DAQ
 
 namespace DAQ
 {
+    public class NotEmptyValidationRule : ValidationRule
+    {
+        public override ValidationResult Validate(object value, CultureInfo cultureInfo)
+        {
+            return string.IsNullOrWhiteSpace((value ?? "").ToString())
+              ? new ValidationResult(false, "Field is required.")
+              : ValidationResult.ValidResult;
+        }
+    }
+
+    public class MCDAddressValidationRule : ValidationRule
+    {
+        public string Area { get; set; }
+        public override ValidationResult Validate(object value, CultureInfo cultureInfo)
+        {
+            var regex = new Regex(@"D(\d{1,6})");
+            return !regex.IsMatch(value.ToString())
+              ? new ValidationResult(false, "请输入D区地址，例如D100.")
+              : ValidationResult.ValidResult;
+        }
+
+    }
 }
