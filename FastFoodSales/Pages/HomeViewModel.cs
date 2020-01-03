@@ -1,20 +1,13 @@
-﻿using StyletIoC;
-using Stylet;
+﻿using Stylet;
 using DAQ.Pages;
 using System;
 using System.Linq;
 using System.Collections.Generic;
-using System.IO;
 using System.Net;
-using CsvHelper;
-using System.Dynamic;
 using System.Text.RegularExpressions;
-using System.Windows.Controls;
-using System.Globalization;
 
 namespace DAQ
 {
-
     public class HomeViewModel : Screen
     {
 
@@ -22,19 +15,21 @@ namespace DAQ
         MsgViewModel _msg;
         private MCPLCDataAccess _dataAccess;
         private IConfigureFile configure;
+        private IQueueProcesser<RecordDto> _processer;
         PlcParas plcparas;
-
         BindableCollection<ServoLocationVm> servos = new BindableCollection<ServoLocationVm>();
 
-        public HomeViewModel(MsgViewModel msg, IEventAggregator eventAggregator, MCPLCDataAccess dataAccess, IConfigureFile configure)
+        public HomeViewModel(MsgViewModel msg, IEventAggregator eventAggregator, MCPLCDataAccess dataAccess, IConfigureFile configure,IQueueProcesser<RecordDto> processer)
         {
             _eventAggregator = eventAggregator;
             _msg = msg;
             _dataAccess = dataAccess;
             this.configure = configure;
-
+            _processer = processer;
             InitialConnection(configure);
         }
+
+
 
         private IConfigureFile InitialConnection(IConfigureFile configure)
         {
@@ -72,49 +67,37 @@ namespace DAQ
             _dataAccess.OnDataTriger += _dataAccess_OnDataTriger;
             return configure;
         }
-        CsvWriter csvWriter = null;
-        string _fileDate = DateTime.Today.ToString("yyyyMMdd");
-        StreamWriter writer = null;
-        private CsvWriter GetWriter()
-        {
-            if (_fileDate != DateTime.Today.ToString("yyyyMMdd") || csvWriter == null || writer == null)
-            {
-                csvWriter?.Flush();
-                csvWriter?.Dispose();
-                writer?.Close();
-                writer?.Dispose();
-                writer = new StreamWriter(Path.Combine(AppFolders.Logs, DateTime.Today.ToString("yyyyMMdd") + ".csv"), true);
-                csvWriter = new CsvWriter(writer);
-            }
-            return csvWriter;
-        }
 
         private void _dataAccess_OnDataTriger(bool obj)
         {
             if (servos.Count >= 3)
             {
-                dynamic record = new ExpandoObject();
-                record.DateTime = DateTime.Now;
-                record.Z1Station1 = servos[0].Addr1;
-                record.Z1Station2 = servos[0].Addr2;
-                record.Z1Station3 = servos[0].Addr3;
-                record.Z1Station4 = servos[0].Addr4;
-                record.Z2Station1 = servos[1].Addr1;
-                record.Z2Station2 = servos[1].Addr2;
-                record.Z2Station3 = servos[1].Addr3;
-                record.Z2Station4 = servos[1].Addr4;
-                record.Z3Station1 = servos[2].Addr1;
-                record.Z3Station2 = servos[2].Addr2;
-                record.Z3Station3 = servos[2].Addr3;
-                record.Z3Station4 = servos[2].Addr4;
-                record.Z4Station1 = servos[3].Addr1;
-                record.Z4Station2 = servos[3].Addr2;
-                record.Z4Station3 = servos[3].Addr3;
-                record.Z4Station4 = servos[3].Addr4;
-                this.GetWriter().WriteRecord(record);
-                writer.Flush();
+                var record = new RecordDto
+                {
+                    DateTime = DateTime.Now,
+                    Z1Station1 = servos[0].Addr1,
+                    Z1Station2 = servos[0].Addr2,
+                    Z1Station3 = servos[0].Addr3,
+                    Z1Station4 = servos[0].Addr4,
+                    Z2Station1 = servos[1].Addr1,
+                    Z2Station2 = servos[1].Addr2,
+                    Z2Station3 = servos[1].Addr3,
+                    Z2Station4 = servos[1].Addr4,
+                    Z3Station1 = servos[2].Addr1,
+                    Z3Station2 = servos[2].Addr2,
+                    Z3Station3 = servos[2].Addr3,
+                    Z3Station4 = servos[2].Addr4,
+                    Z4Station1 = servos[3].Addr1,
+                    Z4Station2 = servos[3].Addr2,
+                    Z4Station3 = servos[3].Addr3,
+                    Z4Station4 = servos[3].Addr4
+                };
+                _processer.Process(record);
+                RecordDtos.Add(record);
             }
         }
+
+
 
         private void _dataAccess_OnError(string obj)
         {
@@ -191,6 +174,7 @@ namespace DAQ
         public BindableCollection<ServoLocationVm> Servos { get => servos; set => servos = value; }
         public List<ServoLocation> Locations { get => Plcparas.ServoLocations; }
         public PlcParas Plcparas { get => plcparas; }
+        public BindableCollection<RecordDto> RecordDtos { get; } = new BindableCollection<RecordDto>();
 
         protected override void OnInitialActivate()
         {
@@ -206,26 +190,4 @@ namespace DAQ
 
 namespace DAQ
 {
-    public class NotEmptyValidationRule : ValidationRule
-    {
-        public override ValidationResult Validate(object value, CultureInfo cultureInfo)
-        {
-            return string.IsNullOrWhiteSpace((value ?? "").ToString())
-              ? new ValidationResult(false, "Field is required.")
-              : ValidationResult.ValidResult;
-        }
-    }
-
-    public class MCDAddressValidationRule : ValidationRule
-    {
-        public string Area { get; set; }
-        public override ValidationResult Validate(object value, CultureInfo cultureInfo)
-        {
-            var regex = new Regex(@"D(\d{1,6})");
-            return !regex.IsMatch(value.ToString())
-              ? new ValidationResult(false, "请输入D区地址，例如D100.")
-              : ValidationResult.ValidResult;
-        }
-
-    }
 }
