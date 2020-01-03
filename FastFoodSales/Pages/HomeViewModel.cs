@@ -129,7 +129,7 @@ namespace DAQ
         {
             configure.Load();
             var regex = new Regex(@"D(\d{1,6})");
-            var plcparas = configure.GetValue<PlcParas>(ConfigureKeys.PLCParas);
+            var plcParas = configure.GetValue<PlcParas>(ConfigureKeys.PLCParas);
             var r = Locations.SelectMany(x => new[] { x.Addr1, x.Addr2, x.Addr3, x.Addr4 })
                               .Where(m => !regex.IsMatch(m));
             if (r.Any())
@@ -156,7 +156,7 @@ namespace DAQ
             }
             foreach (var vm in Locations)
             {
-                var para = plcparas.ServoLocations.FirstOrDefault(x => x.Name == vm.Name);
+                var para = plcParas.ServoLocations.FirstOrDefault(x => x.Name == vm.Name);
                 if (para != null)
                 {
                     para.Addr1 = vm.Addr1;
@@ -165,9 +165,10 @@ namespace DAQ
                     para.Addr4 = vm.Addr4;
                 }
             }
-            plcparas.Ip = Plcparas.Ip;
-            plcparas.Port = Plcparas.Port;
-            configure = configure.SetValue(ConfigureKeys.PLCParas, plcparas);
+            plcParas.Ip = Plcparas.Ip;
+            plcParas.Port = Plcparas.Port;
+            plcParas.TriggerAddress = Plcparas.TriggerAddress;
+            configure = configure.SetValue(ConfigureKeys.PLCParas, plcParas);
             InitialConnection(configure);
         }
 
