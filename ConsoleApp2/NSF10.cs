@@ -1,4 +1,4 @@
-﻿using Newtonsoft.Json;
+﻿
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -7,8 +7,6 @@ using System.Net.Sockets;
 using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
-using System.Windows.Automation.Peers;
-using System.Windows.Documents;
 
 namespace DAQ.Service
 {
@@ -54,17 +52,16 @@ namespace DAQ.Service
         UdpClient client = new UdpClient();
         CancellationTokenSource cts = new CancellationTokenSource();
         System.Timers.Timer timer = new System.Timers.Timer(5000);
-
-        public event EventHandler<ArcValue> OnArcValue;
-
-        public event EventHandler<PeakValue> OnPeakValue;
-
         public Nsf10(IPAddress ip)
         {
             client.Connect(new IPEndPoint(ip, 8810));
             Task.Factory.StartNew(Recieve, cts.Token, TaskCreationOptions.LongRunning, TaskScheduler.Default);
             timer.Elapsed += Timer_Elapsed;
+            client.Send(new byte[] { 1, 4, 0, 0 }, 4);
+            Thread.Sleep(100);
+            client.Send(new byte[] { 1, 7, 0, 0 }, 4);
             timer.Start();
+
         }
 
         private void Timer_Elapsed(object sender, System.Timers.ElapsedEventArgs e)
@@ -72,6 +69,8 @@ namespace DAQ.Service
             try
             {
                 client.Send(new byte[] { 1, 4, 0, 0 }, 4);
+                Thread.Sleep(100);
+                client.Send(new byte[] { 1, 7, 0, 0 }, 4);
             }
             catch (Exception ex)
             {
@@ -125,7 +124,6 @@ namespace DAQ.Service
                             {
                                 arcValue.XyPoint.Add((BitConverter.ToSingle(buf, i), BitConverter.ToSingle(buf, i + 4)));
                             }
-                            OnArcValue?.BeginInvoke(this, arcValue, null, null);    
                         }
                         else if (buf[0] == 1 && buf[1] == 8)
                         {
@@ -144,8 +142,7 @@ namespace DAQ.Service
                                 PdtId = Encoding.ASCII.GetString(buf.Skip(49).Take(20).TakeWhile(x => x != 0).ToArray()),
                                 EONo = buf[69],
                                 EoTz = (BitConverter.ToSingle(buf, 70), BitConverter.ToSingle(buf, 70 + 4))
-                            };
-                            OnPeakValue?.BeginInvoke(this, peakValue, null, null);             
+                            };                     
                         }
                     }
                 }

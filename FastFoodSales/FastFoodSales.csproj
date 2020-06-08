@@ -172,6 +172,10 @@
       <DependentUpon>NSF10View.xaml</DependentUpon>
     </Compile>
     <Compile Include="Pages\NSF10ViewModel.cs" />
+    <Compile Include="Pages\NsfCollectionView.xaml.cs">
+      <DependentUpon>NsfCollectionView.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Pages\NsfCollectionViewModel.cs" />
     <Compile Include="Pages\OEEView.xaml.cs">
       <DependentUpon>OEEView.xaml</DependentUpon>
     </Compile>
@@ -189,7 +193,7 @@
     <Compile Include="Service\DataAccess.cs" />
     <Compile Include="Service\IMsgSaver.cs" />
     <Compile Include="Service\Instrament\IPortService.cs" />
-    <Compile Include="Service\Instrament\NSF10.cs" />
+    <Compile Include="Service\Instrament\Nsf10.cs" />
     <Compile Include="Service\Instrament\PlcService.cs" />
     <Compile Include="Service\Instrament\TH9320.cs" />
     <Compile Include="Service\MsgDBSaver.cs" />
@@ -231,6 +235,10 @@
       <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Include="Pages\NSF10View.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Pages\NsfCollectionView.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>

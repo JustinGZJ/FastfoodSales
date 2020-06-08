@@ -24,6 +24,8 @@ namespace DAQ
         public MsgViewModel Msg { get; set; }
         [Inject]
         public PLCViewModel PLC { get; set; }
+        [Inject]
+        public NsfCollectionViewModel NsfCollection { get; set; }
 
     public bool IsDialogOpen { get { return AlarmList.Count > 0; } }
 
@@ -42,14 +44,16 @@ namespace DAQ
                     case 0:
                         ActivateItem(Home);
                         break;
-
                     case 1:
-                        ActivateItem(Msg);
+                        ActivateItem(NsfCollection);
                         break;
                     case 2:
-                        ActivateItem(new AboutViewModel());
+                        ActivateItem(Msg);
                         break;
                     case 3:
+                        ActivateItem(new AboutViewModel());
+                        break;
+                    case 4:
                   //      ActivateItem(Camera);
                         break;
                 }
