@@ -3,6 +3,8 @@ using System;
 using System.Text.RegularExpressions;
 using System.Linq;
 using System.Threading;
+using System.Reactive.Linq;
+using System.Threading.Tasks;
 
 namespace DAQ.Service
 {
@@ -10,6 +12,7 @@ namespace DAQ.Service
     {
         public float MainValue { get; set; }
         public float SubValue { get; set; }
+        Timer timer;
         public override bool Connect()
         {
             if (port.IsOpen)
@@ -18,7 +21,10 @@ namespace DAQ.Service
             {
                 port.PortName = PortName;
                 port.Open();
+                port.Write("{K1}");
                 IsConnected = port.IsOpen;
+                timer = new Timer((s) => { 
+                    _rcvbuffer = ""; }, null, 1000, -1);
                 return IsConnected;
             }
             catch (Exception EX)
@@ -27,6 +33,7 @@ namespace DAQ.Service
                 port.Close();
                 return false;
             }
+        
         }
         string _rcvbuffer = "";
         public TH2775B(PlcService plc, IEventAggregator events) : base(plc, events)
@@ -38,7 +45,7 @@ namespace DAQ.Service
                 while (port.BytesToRead > 0)
                 {
                     var bf = port.ReadExisting();
-                   // Events.PublishMsg(InstName, bf);
+                    Events.PublishMsg(InstName, bf);
                     _rcvbuffer += bf;
                 }
             };

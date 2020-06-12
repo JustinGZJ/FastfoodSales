@@ -8,6 +8,7 @@ using Stylet;
 using StyletIoC;
 using DAQ.Service;
 using HslCommunication.Profinet.Omron;
+using DAQ.Pages;
 
 namespace DAQ
 {
@@ -19,6 +20,8 @@ namespace DAQ
         public RM3545 PortServiceA { get; set; }
         [Inject]
         public TH2882A PortServiceB { get; set; }
+        [Inject]
+        public NSF10ViewModel nsf { get; set; }
 
         [Inject] public IReadWriteFactory ReadWriteFactory { get; set; }
 

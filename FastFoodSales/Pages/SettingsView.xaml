@@ -95,18 +95,7 @@
                     </Grid>
                 </materialDesign:Card>
                 <materialDesign:Card Margin="20" MinHeight="236" UniformCornerRadius="8" Grid.Column="1">
-                    <StackPanel Margin="20">
-                        <WrapPanel>
-                            <materialDesign:PackIcon Foreground="DarkGray" Kind="SerialPort" Height="34" Width="34" HorizontalAlignment="Center" VerticalAlignment="Center"></materialDesign:PackIcon>
-                            <TextBlock Style="{StaticResource MaterialDesignDisplay1TextBlock}" Foreground="DarkGray">PLC TEST</TextBlock>
-                        </WrapPanel>
-                        <TextBox Text="{Binding PLCAddress}"  Style="{StaticResource MaterialDesignFloatingHintTextBox}" materialDesign:HintAssist.Hint="PLC Address" ></TextBox>
-                        <TextBlock Margin=" 0 5">地址示例 D100 C100 W100 H100 M100</TextBlock>
-                        <TextBox Text="{Binding PLCValue}"  Style="{StaticResource MaterialDesignFloatingHintTextBox}" materialDesign:HintAssist.Hint="Value"></TextBox>
-
-                        <Button Margin="0 10" Command="{s:Action ReadInt}" Background="SkyBlue">write</Button>
-                        <TextBlock Text="{Binding ErrorMessage}"></TextBlock>
-                        </StackPanel>
+                    <ContentControl s:View.Model="{Binding nsf}"></ContentControl>
                 </materialDesign:Card>
                 <materialDesign:Card Foreground="DarkGray" Grid.Column="1" Grid.Row="1" Background="White" HorizontalAlignment="Stretch" VerticalAlignment="Stretch"  Margin="20">
                     <Grid Margin="20">

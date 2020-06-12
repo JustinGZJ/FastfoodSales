@@ -1,27 +1,53 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
+using System.Runtime.Remoting.Services;
 using System.Text;
+using System.Threading;
 using System.Threading.Tasks;
+using Bogus.DataSets;
 using HslCommunication;
 using HslCommunication.Core;
 using HslCommunication.Profinet.Omron;
 using HslCommunication.Profinet.Siemens;
+using Microsoft.Xaml.Behaviors.Media;
 using Stylet;
 using StyletIoC;
 
 namespace DAQ.Service
 {
-
     public class EventIO
     {
         public int Index { get; set; }
         public bool Value { get; set; }
     }
 
+    public class ChaPin
+    {
+        public ChaPin()
+        {
+        }
+        bool _triger;
+
+        public bool Done { get; set; }
+
+
+        public void Enter(bool triger, float value)
+        {
+            if (triger && !_triger)
+            {
+                _triger = triger;
+            }
+        }
+    }
+
+
     public class PlcService : PropertyChangedBase
     {
         SiemensS7Net _rw;
+        SiemensS7Net _rw2;
+        SiemensS7Net _rw3;
         string addr = "DB3000.0";
         public bool IsConnected { get; set; }
 
@@ -63,7 +89,10 @@ namespace DAQ.Service
                 "空3-6",
                 "空3-7"
                 };
-        public BindableCollection<KV<bool>> KVBits { get; set; } = new BindableCollection<KV<bool>>();
+        public BindableCollection<KV<bool>> KVBits { get; set; }
+
+
+        public BindableCollection<KV<float>> KVFloats { get; set; } = new BindableCollection<KV<float>>(Enumerable.Range(0, 32).Select(x => new KV<float>() { Index = x, Time = DateTime.Now }));
         MsgFileSaver<PLC_FINAL_DATA> saver;
 
         public IEventAggregator Events { get; set; }
@@ -75,10 +104,10 @@ namespace DAQ.Service
         {
             this.saver = saver;
             this.Events = eventAggregator;
-            for (int i = 0; i < Bits.Length; i++)
-            {
-                KVBits.Add(new KV<bool>() { Key = BitTags[i], Value = Bits[i], Index = i, Time = DateTime.Now });
-            }
+            KVBits = new BindableCollection<KV<bool>>(Enumerable.Range(0, 32).Select(x => new KV<bool>() { Index = x, Key = BitTags[x], Time = DateTime.Now }));
+            KVFloats[0].Key = "电阻1";
+            KVFloats[1].Key = "电阻2";
+            KVFloats[2].Key = "最大压力";
         }
         public void AddPLCData(PLC_FINAL_DATA data)
         {
@@ -97,9 +126,12 @@ namespace DAQ.Service
                 _rw.ConnectClose();
                 _rw = null;
             }
-            _rw = new SiemensS7Net(SiemensPLCS.S1200, "192.168.0.1");
+            _rw = new SiemensS7Net(SiemensPLCS.S1200, "192.168.0.139");
+            _rw2 = new SiemensS7Net(SiemensPLCS.S1200, "192.168.0.1");
+            _rw3 = new SiemensS7Net(SiemensPLCS.S1200, "192.168.0.81");
             Task.Factory.StartNew(() =>
             {
+                _rw.ConnectServer();
                 while (true)
                 {
                     var rop = _rw.Read(addr, 70);
@@ -164,9 +196,57 @@ namespace DAQ.Service
                             _rw.Write("DB3000.68", (short)0);
                         }
                     }
-                    System.Threading.Thread.Sleep(10);
+                    Thread.Sleep(10);
                 }
-            });
+            }, TaskCreationOptions.LongRunning);
+
+            Task.Factory.StartNew(() =>
+            {
+                _rw2.ConnectServer();
+                while (true)
+                {
+                    KVFloats[0].Value = _rw2.ReadFloat("M90").Content;
+                    KVFloats[1].Value = _rw2.ReadFloat("M94").Content;
+                    var trigger = _rw2.ReadBool("M99.0").Content;
+                    if (trigger)
+                    {
+                        var dictitionary = new Dictionary<string, string>();
+                        dictitionary["时间"] = DateTime.Now.ToString();
+                        dictitionary["电阻1"] = KVFloats[0].Value.ToString("f2");
+                        dictitionary["电阻2"] = KVFloats[1].Value.ToString("f2");
+                        Utils.SaveFile(Path.Combine("../DaqData", DateTime.Now.ToString("yyyyMMdd"), "熔接电阻.csv"), dictitionary);
+                        _rw2.Write("M99.1", true);
+                    }
+                    Thread.Sleep(100);
+                }
+
+            }, TaskCreationOptions.LongRunning);
+
+            Task.Factory.StartNew(() =>
+            {
+                _rw3.ConnectServer();
+                while (true)
+                {
+                    var rd = _rw3.ReadInt32("M90");
+                    if (!rd.IsSuccess)
+                    {
+                        Thread.Sleep(100);
+                        continue;
+                    }
+                    KVFloats[2].Value = rd.Content;
+                    var trigger = _rw3.ReadBool("M99.0").Content;
+                    if (trigger)
+                    {
+                        var dictitionary = new Dictionary<string, string>();
+                        dictitionary["时间"] = DateTime.Now.ToString();
+                        dictitionary["最大压力"] = (KVFloats[2].Value/100).ToString("f2");
+                        Utils.SaveFile(Path.Combine("../DaqData", DateTime.Now.ToString("yyyyMMdd"), "插PIN压力.csv"), dictitionary);
+                        _rw3.Write("M99.1", true);
+                    }
+                    Thread.Sleep(100);
+                }
+
+            }, TaskCreationOptions.LongRunning);
             return IsConnected;
         }
         int dbIndex = 3000;
@@ -483,7 +563,7 @@ namespace DAQ.Service
 
         public float PercentToFloat(string value)
         {
-             return  float.TryParse(value.TrimEnd('%'),out float v)?v/100f:0f;
+            return float.TryParse(value.TrimEnd('%'), out float v) ? v / 100f : 0f;
         }
         public byte[] ToSource()
         {

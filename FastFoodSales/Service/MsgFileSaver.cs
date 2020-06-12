@@ -7,6 +7,36 @@ using System.IO;
 
 namespace DAQ.Service
 {
+
+    public static class Utils
+    {
+        public static bool SaveFile(string fileName, Dictionary<string, string> dictionary)
+        {
+            try
+            {
+                var dir = Path.GetDirectoryName(fileName);
+                if (!Directory.Exists(dir)) Directory.CreateDirectory(dir);
+                if (!File.Exists(fileName))
+                {
+                    var header = string.Join(",", dictionary.Keys).Trim(',') + Environment.NewLine;
+                    var content = string.Join(",", dictionary.Values).Trim(',') + Environment.NewLine;
+                    File.AppendAllText(fileName, header + content,Encoding.Default);
+                }
+                else
+                {
+                    var content = string.Join(",", dictionary.Values).Trim(',');
+                    File.AppendAllText(fileName, content + Environment.NewLine,Encoding.Default);
+                }
+                return true;
+            }
+            catch (Exception ex)
+            {
+                ;
+                return false;
+            }
+        }
+    }
+   
     public class MsgFileSaver<T> : IQueueProcesser<T> where T : ISource
     {
         QueueProcesser<T> processer;
