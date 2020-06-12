@@ -4,12 +4,13 @@
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
              xmlns:lvc="clr-namespace:LiveCharts.Wpf;assembly=LiveCharts.Wpf"
+             xmlns:lvcg="clr-namespace:LiveCharts.Geared;assembly=LiveCharts.Geared"
              mc:Ignorable="d" 
              d:DesignHeight="600" d:DesignWidth="800"
              xmlns:local="clr-namespace:DAQ.Pages"
              d:DataContext="{d:DesignInstance local:NSF10ViewModel ,IsDesignTimeCreatable=True}"
              Background="#7EBE8E">
-    <Grid>
+    <Grid Width="640" Height="480">
         <Grid.ColumnDefinitions>
             <ColumnDefinition Width=".7*"></ColumnDefinition>
             <ColumnDefinition Width=".3*"></ColumnDefinition>
@@ -28,15 +29,23 @@
         </StackPanel>
         <lvc:CartesianChart Name="Chart" Grid.Row="1" Grid.Column="0" Grid.ColumnSpan="2" Margin="15">
             <lvc:CartesianChart.Series>
-                <lvc:ScatterSeries Values="{Binding ChartValuesX}" StrokeThickness="1" 
-                                DataLabels="False"  Foreground="#6B303030"
-                                Stroke="White" Fill="Transparent" />
+                <lvcg:GLineSeries Values="{Binding ChartValuesX}" StrokeThickness="2" 
+                                DataLabels="False"  Foreground="#6B303030" PointGeometry="{x:Null}"
+                                Stroke="Black" Fill="Transparent" ScalesYAt="0"/>
+                <lvcg:GLineSeries Values="{Binding ChartValuesY}" StrokeThickness="2" 
+                                DataLabels="False"  Foreground="#6B303030" LineSmoothness="1" PointGeometry="{x:Null}"
+                                Stroke="Red" Fill="Transparent" ScalesYAt="1" />
             </lvc:CartesianChart.Series>
             <lvc:CartesianChart.AxisX>
                 <lvc:Axis IsEnabled="True" ShowLabels="True"/>
             </lvc:CartesianChart.AxisX>
             <lvc:CartesianChart.AxisY>
                 <lvc:Axis Foreground="White" FontSize="14">
+                    <lvc:Axis.Separator>
+                        <lvc:Separator StrokeThickness="1" Stroke="#8EFFFFFF" />
+                    </lvc:Axis.Separator>
+                </lvc:Axis>
+                <lvc:Axis Foreground="White" FontSize="14" Position="RightTop">
                     <lvc:Axis.Separator>
                         <lvc:Separator StrokeThickness="1" Stroke="#8EFFFFFF" />
                     </lvc:Axis.Separator>
@@ -53,23 +62,6 @@
             <TextBlock Foreground="White" FontSize="16" HorizontalAlignment="Center" Margin="0,20,0,0">Y 负峰值点</TextBlock>
             <TextBlock Foreground="White" FontSize="25" HorizontalAlignment="Center" Text="{Binding YNagitivePeak}"></TextBlock>
         </StackPanel>
-        <Button Grid.Column="1" Grid.Row="1" Width="40" Height="40" VerticalAlignment="Top" Panel.ZIndex="1"
-                   Margin="0, 230, 0, 0">
-            <Button.Template>
-                <ControlTemplate TargetType="Button">
-                    <Grid>
-                        <Grid.Effect>
-                            <DropShadowEffect BlurRadius="15" Direction="-90" RenderingBias="Quality" Opacity=".2" ShadowDepth="1"/>
-                        </Grid.Effect>
-                        <Ellipse Stroke="Black" StrokeThickness="0" Fill="#4C4949">
-
-                        </Ellipse>
-                        <Path Width="20" Height="20" Stretch="Fill" Fill="White" Data="F1 M 58,33.5001L 58,27L 49,19L 40,27.5001L 40,33.5001L 46,28.2097L 46,40.5C 46,46.299 41.299,51 35.5,51C 29.701,51 25,46.299 25,40.5C 25,34.8686 29.4332,30.2727 35,30.0117L 35,24.0074C 26.1186,24.2718 19,31.5546 19,40.5C 19,49.6127 26.3873,57 35.5,57C 44.6127,57 52,49.6127 52,40.5L 52,28.125L 58,33.5001 Z "/>
-                        <ContentPresenter HorizontalAlignment="Center"
-                                  VerticalAlignment="Center"/>
-                    </Grid>
-                </ControlTemplate>
-            </Button.Template>
-        </Button>
+ 
     </Grid>
 </UserControl>

@@ -16,20 +16,6 @@
         mc:Ignorable="d" Height="700" Width="1200" ResizeMode="NoResize" WindowStartupLocation="CenterScreen" WindowStyle="None"       
         d:DataContext="{d:DesignInstance  local:MainWindowViewModel}">
     <materialDesign:DialogHost IsOpen="{Binding IsDialogOpen,Mode=OneWay}">
-        <materialDesign:DialogHost.DialogContent>
-            <DockPanel Margin="20">
-                <Border Margin="0 10" DockPanel.Dock="Top" BorderThickness="0 0 0 1" BorderBrush="Gray">
-                    <TextBlock Style="{StaticResource MaterialDesignTitleTextBlock}" HorizontalAlignment="Center">ALARM LIST</TextBlock>
-                </Border>
-                <ItemsControl ItemsSource="{Binding AlarmList}" Foreground="Orange">
-                    <ItemsControl.ItemTemplate>
-                        <DataTemplate>
-                            <TextBlock Text="{Binding Content}"></TextBlock>
-                        </DataTemplate>
-                    </ItemsControl.ItemTemplate>
-                </ItemsControl>
-            </DockPanel>
-        </materialDesign:DialogHost.DialogContent>
         <Grid Background="LightGray" MouseMove="Grid_MouseMove">
             <Grid.ColumnDefinitions>
                 <ColumnDefinition Width="auto"/>
@@ -53,11 +39,17 @@
                         </StackPanel>
                     </ListViewItem >
                     <ListViewItem  Height="40">
-                    <StackPanel Margin="5,0,0,0" Orientation="Horizontal">
-                        <materialDesign:PackIcon Kind="Monitors"  Height="30" Width="30" HorizontalAlignment="Center" VerticalAlignment="Center"/>
-                        <TextBlock HorizontalAlignment="Center" VerticalAlignment="Center" Margin="20 0">NSF10</TextBlock>
-                    </StackPanel>
-                </ListViewItem>
+                        <StackPanel Margin="5,0,0,0" Orientation="Horizontal">
+                            <materialDesign:PackIcon Kind="Instagram"  Height="30" Width="25" HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                            <TextBlock HorizontalAlignment="Center" VerticalAlignment="Center" Margin="20 0">Presure</TextBlock>
+                        </StackPanel>
+                    </ListViewItem>
+                    <ListViewItem  Height="40">
+                        <StackPanel Margin="5,0,0,0" Orientation="Horizontal">
+                            <materialDesign:PackIcon Kind="Monitors"  Height="30" Width="25" HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                            <TextBlock HorizontalAlignment="Center" VerticalAlignment="Center" Margin="20 0">Weilding</TextBlock>
+                        </StackPanel>
+                    </ListViewItem>
                     <ListViewItem  Height="40">
                         <StackPanel Margin="5,0,0,0" Orientation="Horizontal">
                             <materialDesign:PackIcon Kind="Message" Height="30" Width="25" HorizontalAlignment="Center" VerticalAlignment="Center"/>

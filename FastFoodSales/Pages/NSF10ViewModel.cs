@@ -3,6 +3,9 @@ using LiveCharts;
 using Stylet;
 using System;
 using System.Net;
+using LiveCharts.Geared;
+using System.Linq;
+using System.Collections.Generic;
 
 namespace DAQ.Pages
 {
@@ -15,7 +18,8 @@ namespace DAQ.Pages
         public string YPositivePeak { get; set; }
         public string XNagitivePeak { get; set; }
         public string YNagitivePeak { get; set; }
-        private Nsf10 nsf10;
+
+        public event EventHandler<ArcValue> OnArcValue;
 
         public NSF10ViewModel()
         {
@@ -23,24 +27,28 @@ namespace DAQ.Pages
 
         public NSF10ViewModel(string ip)
         {
-            nsf10 = new Nsf10(IPAddress.Parse(ip));
+            Nsf10 = new Nsf10(IPAddress.Parse(ip));
             Ip = ip;
             Time = DateTime.Now.ToString("HH:mm:ss");
 
-            ChartValuesX = new ChartValues<float>();
+            ChartValuesX = new GearedValues<float>()
+            {
+            };
+            ChartValuesY = new GearedValues<float>();
 
-            nsf10.OnArcValue += Nsf10_OnArcValue;
+            Nsf10.OnArcValue += Nsf10_OnArcValue;
         }
 
         private void Nsf10_OnArcValue(object sender, ArcValue e)
         {
+            OnArcValue?.BeginInvoke(this, e, null, null);
             ChartValuesX.Clear();
             ChartValuesY.Clear();
-            foreach (var m in e.XyPoint)
-            {
-                ChartValuesX.Add(m.Item1);
-                ChartValuesY.Add(m.Item2);
-            }
+            IEnumerable<(float, float)> values;
+            var n = e.XyPoint.Count / 200+1;
+            values = Enumerable.Range(0, e.XyPoint.Count - 1).Where(x => x % n == 0).Select(i => e.XyPoint[i]);
+            ChartValuesX.AddRange(values.Select(x => x.Item1));
+            ChartValuesY.AddRange(values.Select(x => x.Item2));
             XPositivePeak = $"{e.XPositivePeak.Item1:f2},{e.XPositivePeak.Item2:f2}";
             YPositivePeak = $"{e.YPositivePeak.Item1:f2},{e.YPositivePeak.Item2:f2}";
             XNagitivePeak = $"{e.XNagitivePeak.Item1:f2},{e.XNagitivePeak.Item2:f2}";
@@ -50,12 +58,13 @@ namespace DAQ.Pages
 
         protected override void OnClose()
         {
-            nsf10.OnArcValue -= Nsf10_OnArcValue;
+         //   Nsf10.OnArcValue -= Nsf10_OnArcValue;
             base.OnClose();
         }
 
-        public ChartValues<float> ChartValuesX { get; set; }
+        public GearedValues<float> ChartValuesX { get; set; }
 
-        public ChartValues<float> ChartValuesY { get; set; }
+        public GearedValues<float> ChartValuesY { get; set; }
+        public Nsf10 Nsf10 { get; set; }
     }
 }
