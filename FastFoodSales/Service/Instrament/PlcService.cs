@@ -1,19 +1,15 @@
-﻿using System;
+﻿using HslCommunication;
+using HslCommunication.Core;
+using HslCommunication.Profinet.Siemens;
+using Stylet;
+using StyletIoC;
+using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
-using System.Runtime.Remoting.Services;
 using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
-using Bogus.DataSets;
-using HslCommunication;
-using HslCommunication.Core;
-using HslCommunication.Profinet.Omron;
-using HslCommunication.Profinet.Siemens;
-using Microsoft.Xaml.Behaviors.Media;
-using Stylet;
-using StyletIoC;
 
 namespace DAQ.Service
 {
@@ -28,10 +24,10 @@ namespace DAQ.Service
         public ChaPin()
         {
         }
-        bool _triger;
+
+        private bool _triger;
 
         public bool Done { get; set; }
-
 
         public void Enter(bool triger, float value)
         {
@@ -45,55 +41,18 @@ namespace DAQ.Service
 
     public class PlcService : PropertyChangedBase
     {
-        SiemensS7Net _rw;
-        SiemensS7Net _rw2;
-        SiemensS7Net _rw3;
-        string addr = "DB3000.0";
+        private SiemensS7Net _rw;
+        private SiemensS7Net _rw2;
+        private SiemensS7Net _rw3;
+        private string addr = "DB3000.0";
         public bool IsConnected { get; set; }
 
-        readonly bool[] Bits = new bool[32];
-        readonly string[] BitTags = new string[32] {
-                "空0-0",
-                "空0-1",
-                "通讯建立开始",
-                "通讯建立完成",
-                "OK数据上传开始",
-                "OK数据上传完成",
-                "NG数据上传开始",
-                "NG数据上传完成",
-
-                "绝缘数据获取开始",
-                "匝间数据1获取开始",
-                "匝间数据2获取开始",
-                "匝间数据3获取开始",
-                "电感数据获取开始",
-                "电阻数据获取开始",
-                "",
-                "",
-
-                "空2-0",
-                "空2-1",
-                "空2-2",
-                "空2-3",
-                "空2-4",
-                "空2-5",
-                "空2-6",
-                "空2-7",
-
-                "绝缘数据获取完成",
-                "匝间数据1获取完成",
-                "匝间数据2获取完成",
-                "匝间数据3获取完成",
-                "电感数据获取完成",
-                "电阻数据获取完成",
-                "空3-6",
-                "空3-7"
-                };
+        private readonly bool[] Bits = new bool[32];
+        private readonly string[] BitTags = Enum.GetNames(typeof(IO_DEF));
         public BindableCollection<KV<bool>> KVBits { get; set; }
 
-
         public BindableCollection<KV<float>> KVFloats { get; set; } = new BindableCollection<KV<float>>(Enumerable.Range(0, 32).Select(x => new KV<float>() { Index = x, Time = DateTime.Now }));
-        MsgFileSaver<PLC_FINAL_DATA> saver;
+        private MsgFileSaver<PLC_FINAL_DATA> saver;
 
         public IEventAggregator Events { get; set; }
         public BindableCollection<PLC_FINAL_DATA> PLC_FINAL_DATAS { get; set; } = new BindableCollection<PLC_FINAL_DATA>();
@@ -109,6 +68,7 @@ namespace DAQ.Service
             KVFloats[1].Key = "电阻2";
             KVFloats[2].Key = "最大压力";
         }
+
         public void AddPLCData(PLC_FINAL_DATA data)
         {
             if (PLC_FINAL_DATAS.Count > 500)
@@ -116,7 +76,6 @@ namespace DAQ.Service
                 PLC_FINAL_DATAS.RemoveAt(0);
             }
             PLC_FINAL_DATAS.Add(data);
-
         }
 
         public bool Connect()
@@ -126,7 +85,8 @@ namespace DAQ.Service
                 _rw.ConnectClose();
                 _rw = null;
             }
-            _rw = new SiemensS7Net(SiemensPLCS.S1200, "192.168.0.139");
+            _rw = new SiemensS7Net(SiemensPLCS.S1200, "127.0.0.1");
+          //  _rw = new SiemensS7Net(SiemensPLCS.S1200, "192.168.0.139");
             _rw2 = new SiemensS7Net(SiemensPLCS.S1200, "192.168.0.1");
             _rw3 = new SiemensS7Net(SiemensPLCS.S1200, "192.168.0.81");
             Task.Factory.StartNew(() =>
@@ -147,7 +107,6 @@ namespace DAQ.Service
                             {
                                 Bits[i] = v;
                                 KVBits[i].Value = v;
-                                Events.PublishMsg("PLC", $"Bit[{i}]:" + (v ? "Rising edge" : "Failing edge"));
                                 if (v)
                                 {
                                     Events.Publish(new EventIO
@@ -156,7 +115,6 @@ namespace DAQ.Service
                                         Value = v
                                     });
                                 }
-
                                 if ((i == (int)IO_DEF.通讯建立开始) && v)
                                 {
                                     Events.PublishMsg("PLC", "通信建立连接");
@@ -168,9 +126,14 @@ namespace DAQ.Service
                                     Events.PublishMsg("PLC", "OK数据上传");
                                     AddPLCData(DATA);
                                     if (saver.CanProcess())
+                                    {
                                         saver.Process(DATA);
+                                        WriteBool(0, false);
+                                    }
                                     else
+                                    {
                                         WriteBool(0, true);
+                                    }
                                     Pulse((int)IO_DEF.OK数据上传完成);
                                 }
                                 if (i == (int)IO_DEF.NG数据上传开始 && v)
@@ -178,7 +141,10 @@ namespace DAQ.Service
                                     var DATA = ReadTestData("DB3011.0");
                                     Events.PublishMsg("PLC", "NG数据上传");
                                     if (saver.CanProcess())
+                                    {
                                         saver.Process(DATA);
+                                        WriteBool(0, false);
+                                    }
                                     else
                                         WriteBool(0, true);
                                     AddPLCData(DATA);
@@ -219,7 +185,6 @@ namespace DAQ.Service
                     }
                     Thread.Sleep(100);
                 }
-
             }, TaskCreationOptions.LongRunning);
 
             Task.Factory.StartNew(() =>
@@ -239,50 +204,31 @@ namespace DAQ.Service
                     {
                         var dictitionary = new Dictionary<string, string>();
                         dictitionary["时间"] = DateTime.Now.ToString();
-                        dictitionary["最大压力"] = (KVFloats[2].Value/100).ToString("f2");
+                        dictitionary["最大压力"] = (KVFloats[2].Value / 100).ToString("f2");
                         Utils.SaveFile(Path.Combine("../DaqData", DateTime.Now.ToString("yyyyMMdd"), "插PIN压力.csv"), dictitionary);
                         _rw3.Write("M99.1", true);
                     }
                     Thread.Sleep(100);
                 }
-
             }, TaskCreationOptions.LongRunning);
             return IsConnected;
         }
-        int dbIndex = 3000;
-        int offset = 0;
+
         public bool WriteBool(int index, bool value)
         {
-            if (_rw is SiemensS7Net s7)
-            {
-
-                var opr = s7.Read($"DB{dbIndex}.{offset}", 4);
-                if (opr.IsSuccess)
-                {
-                    byte m;
-                    if (value)
-                    {
-                        m = (byte)(opr.Content[index / 8] | ((ushort)(1 << (index % 8))));
-                    }
-                    else
-                    {
-                        m = (byte)(opr.Content[index / 8] & (~(1 << (index % 8))));
-                    }
-                    return s7.Write($"DB{dbIndex}.{offset + index / 8}", m).IsSuccess;
-                }
-            }
-            return false;
+            return _rw.Write($"DB3000.{index / 8}.{index % 8}", value).IsSuccess;
         }
 
-        public void Pulse(int bitIndex, int Delayms = 200)
+        public void Pulse(int bitIndex, int Delayms = 500)
         {
             Task.Factory.StartNew(() =>
             {
                 WriteBool(bitIndex, true);
-                System.Threading.Thread.Sleep(Delayms);
+                Thread.Sleep(Delayms);
                 WriteBool(bitIndex, false);
             });
         }
+
         public PLC_FINAL_DATA ReadTestData(string Address)
         {
             var r = _rw.ReadCustomer<PLC_FINAL_DATA>(Address);
@@ -319,6 +265,7 @@ namespace DAQ.Service
                     data.线圈1匝间Z = values[3];
                     data.线圈1匝间结果 = values[4];
                     break;
+
                 case 1:
                     data.线圈2匝间A = values[0].ToString("P");
                     data.线圈2匝间D = values[1];
@@ -326,6 +273,7 @@ namespace DAQ.Service
                     data.线圈2匝间Z = values[3];
                     data.线圈2匝间结果 = values[4];
                     break;
+
                 case 2:
                     data.线圈3匝间A = values[0].ToString("P");
                     data.线圈3匝间D = values[1];
@@ -361,70 +309,101 @@ namespace DAQ.Service
     {
         //读码数据
         public string 读码数据 { get; set; }
+
         //读码数据结果
         public short 读码数据结果 { get; set; }
+
         //OK数据结果  1
         public short OK数据结果 { get; set; }
+
         //NG数据结果 1
         public short NG数据结果 { get; set; }
+
         //绝缘数据结果
         public short 绝缘数据结果 { get; set; }
+
         //匝间数据结果
         public short 匝间数据结果 { get; set; }
+
         //电感数据结果
         public short 电感数据结果 { get; set; }
+
         //电阻数据结果
         public short 电阻数据结果 { get; set; }
+
         //相机数据结果
         public short 相机数据结果 { get; set; }
+
         //通规数据结果
         public short 通规数据结果 { get; set; }
+
         //绝缘数据1
         public float 线圈1绝缘数据 { get; set; }
+
         //绝缘数据2
         public float 线圈2绝缘数据 { get; set; }
+
         //绝缘数据3
         public float 线圈3绝缘数据 { get; set; }
+
         //匝间测试数据1-1
         public string 线圈1匝间A { get; set; }
+
         //匝间测试数据1-2
         public float 线圈1匝间D { get; set; }
+
         //匝间测试数据1-3
         public float 线圈1匝间C { get; set; }
+
         //匝间测试数据1-4
         public float 线圈1匝间Z { get; set; }
 
         public float 线圈1匝间结果 { get; set; }
+
         //匝间测试数据2-1
         public string 线圈2匝间A { get; set; }
+
         //匝间测试数据2-2
         public float 线圈2匝间D { get; set; }
+
         //匝间测试数据2-3
         public float 线圈2匝间C { get; set; }
+
         //匝间测试数据2-4
         public float 线圈2匝间Z { get; set; }
 
         public float 线圈2匝间结果 { get; set; }
+
         //匝间测试数据3-1
         public string 线圈3匝间A { get; set; }
+
         //匝间测试数据3-2
         public float 线圈3匝间D { get; set; }
+
         //匝间测试数据3-3
         public float 线圈3匝间C { get; set; }
+
         //匝间测试数据3-4
         public float 线圈3匝间Z { get; set; }
+
         //匝间预留3
         public float 线圈3匝间结果 { get; set; }
+
         //电感测试数据1
         public float 线圈1电感 { get; set; }
+
         //电感测试数据2
         public float 线圈2电感 { get; set; }
+
         //电感测试数据3
         public float 线圈3电感 { get; set; }
+
         //电阻测试数据1
         public float 线圈1电阻 { get; set; }
+
         //电阻测试数据2
         public float 线圈2电阻 { get; set; }
+
         //电阻测试数据3
         public float 线圈3电阻 { get; set; }
 
@@ -439,56 +418,75 @@ namespace DAQ.Service
                 return ((vs.Max() - vs.Min()) / 48f).ToString("P");
             }
         }
+
         //图像1数据1
         public float 线圈1位置度_F { get; set; }
+
         //图像1数据2
         public float 线圈1位置度_GP { get; set; }
+
         //图像1数据3
         public float 线圈1位置度_S { get; set; }
+
         //图像1数据4
         public float 线圈2位置度_F { get; set; }
+
         //图像1数据5
         public float 线圈2位置度_GP { get; set; }
+
         //图像1数据6
         public float 线圈2位置度_S { get; set; }
+
         //图像1数据7
         public float 线圈3位置度_F { get; set; }
+
         //图像1数据8
         public float 线圈3位置度_GP { get; set; }
+
         //图像1数据9
         public float 线圈3位置度_S { get; set; }
+
         //图像2数据1
         public float 线圈1高度_F { get; set; }
+
         //图像2数据2
         public float 线圈1高度_GP { get; set; }
+
         //图像2数据3
         public float 线圈1高度_S { get; set; }
+
         //图像2数据4
         public float 线圈2高度_F { get; set; }
+
         //图像2数据5
         public float 线圈2高度_GP { get; set; }
+
         //图像2数据6
         public float 线圈2高度_S { get; set; }
+
         //图像2数据7
         public float 线圈3高度_F { get; set; }
+
         //图像2数据8
         public float 线圈3高度_GP { get; set; }
+
         //图像2数据9
         public float 图像2数据9 { get; set; }
+
         //通规数据
         public float 线圈3高度_S { get; set; }
+
         //止规数据
         public float 止规数据 { get; set; }
 
         public string Source { get; set; } = "生产数据";
 
-
         public ushort ReadCount { get; } = 282;
 
-        ReverseBytesTransform transform = new ReverseBytesTransform();
+        private ReverseBytesTransform transform = new ReverseBytesTransform();
+
         public void ParseSource(byte[] Content)
         {
-
             读码数据结果 = transform.TransInt16(Content, 2);
             //OK数据结果  1
             OK数据结果 = transform.TransInt16(Content, 4);
@@ -565,6 +563,7 @@ namespace DAQ.Service
         {
             return float.TryParse(value.TrimEnd('%'), out float v) ? v / 100f : 0f;
         }
+
         public byte[] ToSource()
         {
             byte[] bytes = new byte[ReadCount];
