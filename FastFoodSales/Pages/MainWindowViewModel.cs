@@ -15,6 +15,7 @@ namespace DAQ
         int index = 0;
         [Inject]
         public IEventAggregator Events { get; set; }
+
         [Inject]
         public HomeViewModel Home { get; set; }
         [Inject]
@@ -25,8 +26,6 @@ namespace DAQ
         public PLCViewModel PLC { get; set; }
         [Inject]
         public NsfCollectionViewModel NsfCollection { get; set; }
-        [Inject]
-        public MU100AViewModel MU100A { get; set; }
 
     public bool IsDialogOpen { get { return AlarmList.Count > 0; } }
 
@@ -49,15 +48,13 @@ namespace DAQ
                         ActivateItem(NsfCollection);
                         break;
                     case 2:
-                        ActivateItem(MU100A);
+                        ActivateItem(Msg);
                         break;
                     case 3:
-                        ActivateItem(Msg);
-                      
+                        ActivateItem(new AboutViewModel());
                         break;
                     case 4:
-                        ActivateItem(new AboutViewModel());
-                        //      ActivateItem(Camera);
+                  //      ActivateItem(Camera);
                         break;
                 }
 

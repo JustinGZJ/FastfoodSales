@@ -8,7 +8,6 @@
              mc:Ignorable="d" 
              xmlns:md="http://materialdesigninxaml.net/winfx/xaml/themes"
             xmlns:s="https://github.com/canton7/Stylet"
-    d:DataContext="{d:DesignInstance local:PLCViewModel}"
              d:DesignHeight="450" d:DesignWidth="800">
     <md:TransitioningContent OpeningEffect="{md:TransitionEffect Kind=SlideInFromRight, Duration=00:00:0.5}">
         <Grid>
@@ -72,20 +71,6 @@
                             </ItemsControl.ItemTemplate>
                         </ItemsControl>
                     </ScrollViewer>
-                </TabItem>
-                <TabItem Header="Floats">
-                    <ListView ItemsSource="{Binding PLC.KVFloats}">
-                        <ListView.View>
-                            <GridView>
-                                <GridView.Columns>
-                                    <GridViewColumn Header="编号" DisplayMemberBinding="{Binding Index}"/>
-                                    <GridViewColumn Header="名称" DisplayMemberBinding="{Binding Key}"/>
-                                    <GridViewColumn Header="数值" DisplayMemberBinding="{Binding Value}"/>
-                                    <GridViewColumn Header="时间" DisplayMemberBinding="{Binding Time}"/>
-                                </GridView.Columns>
-                            </GridView>
-                        </ListView.View>
-                    </ListView>
                 </TabItem>
             </TabControl>
 

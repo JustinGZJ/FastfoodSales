@@ -41,30 +41,30 @@ namespace DAQ
         {
             Application.Current.Shutdown();
         }
-
+       
         private void Grid_MouseMove(object sender, MouseEventArgs e)
-        {
-            Dispatcher.BeginInvoke(new Action(() =>
-            {
-                if (e.LeftButton == MouseButtonState.Pressed)
+          {        
+                Dispatcher.BeginInvoke(new Action(() =>
                 {
-                    if (e.GetPosition(this).Y < 50)
+                    if (e.LeftButton == MouseButtonState.Pressed)
+                    {
+                        if( e.GetPosition(this).Y<50)
                         DragMove();
+                    }
                 }
-            }
-            ));
+                ));
         }
 
         private void ListView_SelectionChanged(object sender, SelectionChangedEventArgs e)
-        {
-            var index = ListMenu.SelectedIndex;
+        {      
+            var index = ListMenu.SelectedIndex;     
             transrect.OnApplyTemplate();
             rect.Margin = new Thickness(0, 100 + 40 * index, 0, 0);
         }
 
         private void Grid_MouseDown(object sender, MouseButtonEventArgs e)
         {
-            if (e.ClickCount == 2)
+            if(e.ClickCount==2)
             {
                 if (this.WindowState == WindowState.Normal)
                     WindowState = WindowState.Maximized;
@@ -75,7 +75,7 @@ namespace DAQ
 
         private void Button_Click(object sender, RoutedEventArgs e)
         {
-            if (gdleft.Width < 200)
+            if(gdleft.Width<200)
             {
                 gdleft.Width = 220;
             }

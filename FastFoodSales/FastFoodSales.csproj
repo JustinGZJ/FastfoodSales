@@ -155,6 +155,17 @@
       <DependentUpon>MsgView.xaml</DependentUpon>
     </Compile>
     <Compile Include="Pages\MsgViewModel.cs" />
+<<<<<<< HEAD
+=======
+    <Compile Include="Pages\NSF10View.xaml.cs">
+      <DependentUpon>NSF10View.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Pages\NSF10ViewModel.cs" />
+    <Compile Include="Pages\NsfCollectionView.xaml.cs">
+      <DependentUpon>NsfCollectionView.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Pages\NsfCollectionViewModel.cs" />
+>>>>>>> parent of 9bd3d1f... 20200612现场使用版本
     <Compile Include="Pages\OEEView.xaml.cs">
       <DependentUpon>OEEView.xaml</DependentUpon>
     </Compile>
@@ -213,6 +224,17 @@
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
+<<<<<<< HEAD
+=======
+    <Page Include="Pages\NSF10View.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Pages\NsfCollectionView.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+>>>>>>> parent of 9bd3d1f... 20200612现场使用版本
     <Page Include="Pages\OEEView.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>

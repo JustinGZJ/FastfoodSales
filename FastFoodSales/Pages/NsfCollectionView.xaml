@@ -15,13 +15,7 @@
                         <ContentControl Margin="10" s:View.Model="{Binding}"/>
                     </DataTemplate>
                 </ItemsControl.ItemTemplate>
-                <ItemsControl.ItemsPanel>
-                    <ItemsPanelTemplate>
-                        <WrapPanel/>
-                    </ItemsPanelTemplate>
-                </ItemsControl.ItemsPanel>
             </ItemsControl>
-              
         </ScrollViewer>
     </Grid>
 </UserControl>
