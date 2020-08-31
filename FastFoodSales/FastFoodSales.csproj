@@ -156,7 +156,10 @@
     </Compile>
     <Compile Include="Pages\MsgViewModel.cs" />
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
+=======
+>>>>>>> parent of 9bd3d1f... 20200612现场使用版本
     <Compile Include="Pages\NSF10View.xaml.cs">
       <DependentUpon>NSF10View.xaml</DependentUpon>
     </Compile>
@@ -225,7 +228,10 @@
       <Generator>MSBuild:Compile</Generator>
     </Page>
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
+=======
+>>>>>>> parent of 9bd3d1f... 20200612现场使用版本
     <Page Include="Pages\NSF10View.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
