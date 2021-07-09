@@ -27,35 +27,9 @@ namespace DAQ.Service
         {
             switch (message.Index)
             {
-                case (int)IO_DEF.匝间数据1获取开始:
-                    Read();
-                    Values[0] = vs[0];
-                    Values[1] = vs[1];
-                    Values[2] = vs[2];
-                    Values[3] = vs[3];
-                    Values[4] = vs[4];
-                    Plc.WriteZJ(vs, 0);
+                case (int)IO_DEF.AIP测试完成:  //zie shuj 
+
                     Plc.Pulse((int)IO_DEF.匝间数据1获取完成);
-                    break;
-                case (int)IO_DEF.匝间数据2获取开始:
-                    Read();
-                    Values[5] = vs[0];
-                    Values[6] = vs[1];
-                    Values[7] = vs[2];
-                    Values[8] = vs[3];
-                    Values[9] = vs[4];
-                    Plc.WriteZJ(vs, 1);
-                    Plc.Pulse((int)IO_DEF.匝间数据2获取完成);
-                    break;
-                case (int)IO_DEF.匝间数据3获取开始:
-                    Read();                 
-                    Values[10] = vs[0];
-                    Values[11] = vs[1];
-                    Values[12] = vs[2];
-                    Values[13] = vs[3];
-                    Values[14] = vs[4];
-                    Plc.WriteZJ(vs, 2);
-                    Plc.Pulse((int)IO_DEF.匝间数据3获取完成);
                     break;
             }
         }

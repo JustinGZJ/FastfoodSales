@@ -29,7 +29,7 @@ namespace DAQ.Service
                 }
                 return true;
             }
-            catch (Exception ex)
+            catch (Exception )
             {
                 ;
                 return false;

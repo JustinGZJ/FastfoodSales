@@ -21,10 +21,18 @@ namespace DAQ.Pages
 
         public void Handle(MsgItem message)
         {
-            Items.Insert(0,message);
-            if(Items.Count>20)
+            try
             {
-                Items.RemoveAt(Items.Count-1);
+                Items?.Insert(0, message);
+                if (Items.Count > 100)
+                {
+                    Items?.RemoveAt(Items.Count - 1);
+                }
+            }
+            catch (System.Exception)
+            {
+
+             //   throw;
             }
         }
     }

@@ -16,10 +16,10 @@ namespace DAQ
     {
         [Inject]
         public IEventAggregator Events { get; set; }
-        [Inject]
-        public RM3545 PortServiceA { get; set; }
-        [Inject]
-        public TH2882A PortServiceB { get; set; }
+        //[Inject]
+        //public RM3545 PortServiceA { get; set; }
+        //[Inject]
+        //public TH2882A PortServiceB { get; set; }
         [Inject]
         public NSF10ViewModel nsf { get; set; }
 
@@ -67,24 +67,24 @@ namespace DAQ
             base.OnDeactivate();
             Properties.Settings.Default.Save();
         }
-        public string PortA
-        {
-            get { return Properties.Settings.Default.PORT_RM3545; }
-            set
-            {
-                Properties.Settings.Default.PORT_RM3545 = value;
-                PortServiceA.Connect();
-            }
-        }
-        public string PortB
-        {
-            get { return Properties.Settings.Default.PORT_TH2883S4; }
-            set
-            {
-                Properties.Settings.Default.PORT_TH2883S4 = value;
-                PortServiceB.Connect();
-            }
-        }
+        //public string PortA
+        //{
+        //    get { return Properties.Settings.Default.PORT_RM3545; }
+        //    set
+        //    {
+        //        Properties.Settings.Default.PORT_RM3545 = value;
+        //        PortServiceA.Connect();
+        //    }
+        //}
+        //public string PortB
+        //{
+        //    get { return Properties.Settings.Default.PORT_TH2883S4; }
+        //    set
+        //    {
+        //        Properties.Settings.Default.PORT_TH2883S4 = value;
+        //        PortServiceB.Connect();
+        //    }
+        //}
         public string PLC_IP
         {
             get { return Properties.Settings.Default.PLC_IP; }
@@ -99,32 +99,32 @@ namespace DAQ
             set { Properties.Settings.Default.PLC_PORT = value; }
         }
 
-        public void QueryA(string Cmd)
-        {
-            PortABuffer = $"Send:\t{Cmd}{Environment.NewLine}";
-            bool r = PortServiceA.Request(Cmd, out string replay);
-            if (r)
-            {
-                PortABuffer += $"Recieve:\t{replay}{Environment.NewLine}";
-            }
-            else
-            {
-                PortABuffer += $"error:\t{replay}{Environment.NewLine}";
-            }
-        }
-        public void QueryB(string Cmd)
-        {
-            PortBBuffer = $"Send:\t{Cmd}{Environment.NewLine}";
-            bool r = PortServiceB.Request(Cmd, out string replay);
-            if (r)
-            {
-                PortBBuffer += $"Recieve:\t{replay}{Environment.NewLine}";
-            }
-            else
-            {
-                PortBBuffer += $"error:\t{replay}{Environment.NewLine}";
-            }
-        }
+        //public void QueryA(string Cmd)
+        //{
+        //    PortABuffer = $"Send:\t{Cmd}{Environment.NewLine}";
+        //    bool r = PortServiceA.Request(Cmd, out string replay);
+        //    if (r)
+        //    {
+        //        PortABuffer += $"Recieve:\t{replay}{Environment.NewLine}";
+        //    }
+        //    else
+        //    {
+        //        PortABuffer += $"error:\t{replay}{Environment.NewLine}";
+        //    }
+        //}
+        //public void QueryB(string Cmd)
+        //{
+        //    PortBBuffer = $"Send:\t{Cmd}{Environment.NewLine}";
+        //    bool r = PortServiceB.Request(Cmd, out string replay);
+        //    if (r)
+        //    {
+        //        PortBBuffer += $"Recieve:\t{replay}{Environment.NewLine}";
+        //    }
+        //    else
+        //    {
+        //        PortBBuffer += $"error:\t{replay}{Environment.NewLine}";
+        //    }
+        //}
         bool v = false;
         public void SetBit()
         {
